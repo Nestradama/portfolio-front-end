@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import SectionHeader from "@/components/SectionHeader.vue";
-import {vitrines} from "@/data/vitrine.ts";
+import { useContent } from "@/composables/useContent";
 
+const { vitrines } = useContent()
 const headingId = 'realisations-concepts-title'
 </script>
 

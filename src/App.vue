@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 
 import SiteHeader from '@/components/SiteHeader.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
 import LegalModal from '@/components/modals/LegalModal.vue'
 import PrivacyModal from '@/components/modals/PrivacyModal.vue'
+import { useContent } from '@/composables/useContent'
 
 const legalOpen = ref(false)
 const privacyOpen = ref(false)
 const openLegal = () => (legalOpen.value = true)
 const openPrivacy = () => (privacyOpen.value = true)
+
+const { load } = useContent()
+onMounted(load)
 </script>
 
 <template>

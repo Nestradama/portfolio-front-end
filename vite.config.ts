@@ -17,4 +17,12 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
+    server: {
+        proxy: {
+            '/api': {
+                target: process.env.VITE_API_PROXY ?? 'http://127.0.0.1:3000',
+                changeOrigin: true,
+            },
+        },
+    },
 })

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { projects } from '@/data/projects'
+import { useContent } from '@/composables/useContent'
+
+const { projects } = useContent()
 </script>
 
 <template>

@@ -3,7 +3,9 @@ const headingId = "projects-title"
 
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
-import { projects } from '@/data/projects'
+import { useContent } from '@/composables/useContent'
+
+const { projects } = useContent()
 
 const track = ref<HTMLElement | null>(null)
 const currentPos = ref(0)
