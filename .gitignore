@@ -39,6 +39,12 @@ __screenshots__/
 *.timestamp-*-*.mjs
 /LEGACY/
 
+# Local documentation and scripts
+*.md
+readmes/
+github-remake.sh
+_backup_*
+
 # Reasonix tooling
 .reasonix
 reasonix.toml
