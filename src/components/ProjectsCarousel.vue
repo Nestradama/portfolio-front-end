@@ -7,7 +7,7 @@ import ProjectCard from './ProjectCard.vue'
 import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
 
-const { projects, tags: tagCatalog, settings } = useContent()
+const { projects, settings } = useContent()
 const activeTag = ref('')
 const featuredProjects = computed(() => projects.value.filter((project) => project.featured !== false))
 const tags = computed(() =>
@@ -55,7 +55,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
       </template>
     </SectionHeader>
 
-    <TagFilters v-if="settings.sections.homeFilters && tags.length" v-model="activeTag" :tag-names="tags" :catalog="tagCatalog ?? []" />
+    <TagFilters v-if="settings.sections.homeFilters && tags.length" v-model="activeTag" :tag-names="tags" />
 
     <div class="relative w-full">
       <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">

@@ -64,6 +64,7 @@ function messageOf(failure: unknown): string {
 </script>
 
 <template>
+  <!-- Admin authentication shell; the dashboard is loaded only after session validation. -->
   <div class="max-w-6xl mx-auto">
     <p v-if="loading" class="font-mono text-sm text-muted" role="status">Vérification de la session…</p>
 

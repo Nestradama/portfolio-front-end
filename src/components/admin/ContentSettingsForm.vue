@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 import type { SiteSettings, StackGroup } from '@/data/settings'
+import StackEditor from './StackEditor.vue'
 import { adminButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
@@ -19,7 +20,7 @@ const form = reactive({
   aboutHeading: '',
   aboutParagraphs: '',
   aboutPhoto: '',
-  stackText: '',
+  stackGroups: [] as StackGroup[],
   contactEmail: '',
   contactGithub: '',
   contactLinkedin: '',
@@ -33,9 +34,10 @@ function fill(settings: SiteSettings) {
   form.aboutHeading = settings.about.heading
   form.aboutParagraphs = settings.about.paragraphs.join('\n\n')
   form.aboutPhoto = settings.about.photo
-  form.stackText = settings.stack.groups
-    .map((group) => `${group.title}: ${group.items.join(', ')}`)
-    .join('\n')
+  form.stackGroups = settings.stack.groups.map((group) => ({
+    title: group.title,
+    items: [...group.items],
+  }))
   form.contactEmail = settings.contact.email
   form.contactGithub = settings.contact.github
   form.contactLinkedin = settings.contact.linkedin
@@ -48,27 +50,6 @@ function paragraphs(value: string): string[] {
     .split(/\n\s*\n/)
     .map((item) => item.trim())
     .filter(Boolean)
-}
-
-function stackGroups(value: string): StackGroup[] {
-  return value
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const separator = line.indexOf(':')
-      const title = separator >= 0 ? line.slice(0, separator).trim() : line.trim()
-      const items = separator >= 0 ? line.slice(separator + 1) : ''
-
-      return {
-        title,
-        items: items
-          .split(',')
-          .map((item) => item.trim())
-          .filter(Boolean),
-      }
-    })
-    .filter((group) => group.title !== '')
 }
 
 function submit() {
@@ -84,7 +65,7 @@ function submit() {
       paragraphs: paragraphs(form.aboutParagraphs),
       photo: form.aboutPhoto.trim(),
     },
-    stack: { groups: stackGroups(form.stackText) },
+    stack: { groups: form.stackGroups },
     contact: {
       email: form.contactEmail.trim(),
       github: form.contactGithub.trim(),
@@ -136,8 +117,10 @@ function submit() {
 
     <section class="border border-(--border) p-6">
       <h2 class="font-heading text-xl font-bold">Stack</h2>
-      <p class="mt-1 text-xs text-muted">Une ligne par groupe : <code>Titre: élément, élément</code></p>
-      <textarea v-model="form.stackText" rows="7" :class="[adminInput, 'mt-4']"></textarea>
+      <p class="mt-1 text-xs text-muted">Ajoute des catégories puis des technologies dans chaque catégorie. Utilise les flèches pour l’ordre.</p>
+      <div class="mt-4">
+        <StackEditor v-model="form.stackGroups" />
+      </div>
     </section>
 
     <section class="border border-(--border) p-6">

@@ -6,7 +6,7 @@ import TagFilters from '@/components/TagFilters.vue'
 import VitrineSection from '@/components/VitrineSection.vue'
 import type { Project } from '@/data/projects'
 
-const { projects, settings, tags: tagCatalog } = useContent()
+const { projects, settings } = useContent()
 const activeTag = ref('')
 const visibleProjects = computed(() => projects.value.filter((project) => project.showOnProjects !== false))
 const tags = computed(() =>
@@ -63,7 +63,7 @@ const groups = computed<ProjectGroup[]>(() => {
       </p>
     </header>
 
-    <TagFilters v-if="settings.sections.projectsFilters && tags.length" v-model="activeTag" :tag-names="tags" :catalog="tagCatalog ?? []" />
+    <TagFilters v-if="settings.sections.projectsFilters && tags.length" v-model="activeTag" :tag-names="tags" />
 
     <div v-if="settings.sections.projectsList" class="space-y-8 md:space-y-10">
       <template v-for="group in groups" :key="group.start">
