@@ -1,0 +1,21 @@
+{
+  "name": "Portfolio | Corentin ROQUIN",
+  "short_name": "Corentin ROQUIN",
+  "theme_color": "#20151b",
+  "background_color": "#20151b",
+  "icons": [
+    {
+      "src": "/my-favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/my-favicon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "display": "standalone"
+}

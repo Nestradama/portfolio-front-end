@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Space Grotesk', ui-sans-serif, sans-serif;
+
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-pink: var(--pink);
+  --color-border: var(--border);
+  --color-dot: var(--dot);
+}
+
+/* -------------
+   THEME LIBRARY (tndex.html field 'data-theme')
+
+   Available themes:
+     "espresso-vin" Deep Red
+     "espresso-bordeaux" Purlple/Red
+  -------------                                                                      */
+:root[data-theme="espresso-vin"]       { --bg: #22181d; --card: #1b1216; --text: #e2dddd; --text-muted: #a89b9b; --accent: #9a3a56; --accent-bright: #b85c74; --pink: #ffdbfd; --border: #3a2a31; --dot: rgba(154, 58, 86, 0.08); }
+:root[data-theme="espresso-bordeaux"]  { --bg: #20151b; --card: #190f14; --text: #e0d9da; --text-muted: #a39698; --accent: #7f2840; --accent-bright: #a84a62; --pink: #ffdbfd; --border: #372630; --dot: rgba(127, 40, 64, 0.08); }
+
+body {
+  background-color: var(--bg);
+
+  background-image:
+          url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+
+  background-size: 256px 256px;
+  background-repeat: repeat;
+
+  color: var(--text);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+h1, h2, h3, .font-heading { font-family: 'Space Grotesk', sans-serif; }
+
+.neo-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.neo-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.45);
+  border-color: var(--accent);
+}
+
+.smooth-glide { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
