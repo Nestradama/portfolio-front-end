@@ -36,13 +36,13 @@ function toggle(name: string) {
     <p v-if="!tags.length" class="text-xs text-muted">Crée d’abord des tags dans l’onglet Tags.</p>
     <div v-else class="space-y-3">
       <div v-for="group in groups" :key="group.stack">
-        <p class="mb-1 font-mono text-[10px] uppercase tracking-wider text-accent">{{ group.stack }}</p>
+        <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-accent">{{ group.stack }}</p>
         <div class="flex flex-wrap gap-2">
           <button
             v-for="tag in group.tags"
             :key="tag.id"
             type="button"
-            class="border px-2.5 py-1 text-xs transition-colors"
+            class="border px-3 py-1.5 text-sm font-medium transition-colors"
             :class="modelValue.includes(tag.name) ? 'border-accent bg-accent text-black' : 'border-(--border) text-muted hover:border-accent'"
             @click="toggle(tag.name)"
           >{{ tag.name }}</button>

@@ -14,6 +14,7 @@ const emit = defineEmits<{ changed: [] }>()
 
 const name = ref('')
 const stack = ref('')
+const visible = ref(true)
 const busy = ref(false)
 const error = ref('')
 
@@ -22,7 +23,10 @@ async function create() {
   busy.value = true
   error.value = ''
   try {
-    await adminApi.createTag({ name: name.value.trim(), stack: stack.value || null }, props.csrf)
+    await adminApi.createTag(
+      { name: name.value.trim(), stack: stack.value || null, visible: visible.value },
+      props.csrf,
+    )
     name.value = ''
     emit('changed')
   } catch (failure) {
@@ -36,7 +40,28 @@ async function update(tag: Tag, value: string) {
   busy.value = true
   error.value = ''
   try {
-    await adminApi.updateTag(tag.id, { name: tag.name, stack: value || null }, props.csrf)
+    await adminApi.updateTag(
+      tag.id,
+      { name: tag.name, stack: value || null, visible: tag.visible },
+      props.csrf,
+    )
+    emit('changed')
+  } catch (failure) {
+    error.value = failure instanceof ApiError ? failure.message : 'Mise à jour impossible.'
+  } finally {
+    busy.value = false
+  }
+}
+
+async function toggleVisible(tag: Tag) {
+  busy.value = true
+  error.value = ''
+  try {
+    await adminApi.updateTag(
+      tag.id,
+      { name: tag.name, stack: tag.stack, visible: !tag.visible },
+      props.csrf,
+    )
     emit('changed')
   } catch (failure) {
     error.value = failure instanceof ApiError ? failure.message : 'Mise à jour impossible.'
@@ -73,14 +98,18 @@ async function remove(tag: Tag) {
           <option value="">Sans stack</option>
           <option v-for="option in stackOptions" :key="option" :value="option">{{ option }}</option>
         </select>
+        <label class="mt-2 flex items-center gap-2 text-xs text-muted">
+          <input v-model="visible" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+          Visible dans les filtres publics
+        </label>
       </div>
       <button type="submit" :class="[adminButton, 'self-end']" :disabled="busy">Créer</button>
     </form>
 
     <div class="overflow-x-auto border border-(--border)">
       <table class="w-full text-left text-sm">
-                <thead class="bg-(--card) font-mono text-[10px] uppercase tracking-widest text-muted">
-                  <tr><th class="p-3">Tag</th><th class="p-3">Stack</th><th class="p-3">Utilisations</th><th class="p-3">Actions</th></tr>
+                <thead class="bg-(--card) text-xs font-semibold uppercase tracking-wide text-muted">
+                  <tr><th class="p-3">Tag</th><th class="p-3">Stack</th><th class="p-3">Filtre</th><th class="p-3">Utilisations</th><th class="p-3">Actions</th></tr>
                 </thead>
                 <tbody>
                   <tr v-for="tag in tags" :key="tag.id" class="border-t border-(--border)">
@@ -90,6 +119,9 @@ async function remove(tag: Tag) {
                         <option value="">Sans stack</option>
                         <option v-for="option in stackOptions" :key="option" :value="option">{{ option }}</option>
                       </select>
+                    </td>
+                    <td class="p-3">
+                      <input type="checkbox" :checked="tag.visible" :disabled="busy" :aria-label="`Afficher le tag ${tag.name} dans les filtres`" @change="toggleVisible(tag)">
                     </td>
                     <td class="p-3 font-mono text-xs text-muted">{{ tag.usage }} projet{{ tag.usage > 1 ? 's' : '' }}</td>
                     <td class="p-3">

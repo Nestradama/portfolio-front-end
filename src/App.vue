@@ -44,11 +44,14 @@ watchEffect(() => {
 </script>
 
 <template>
+  <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-accent focus:px-4 focus:py-2 focus:text-black">Aller au contenu</a>
   <SiteHeader />
 
-  <main class="grow w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16">
+  <main id="contenu" tabindex="-1" class="grow w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16 outline-none">
     <RouterView v-slot="{ Component }">
-      <component :is="Component" @open-privacy="openPrivacy()" />
+      <Transition name="page" mode="out-in">
+        <component :is="Component" :key="route.fullPath" @open-privacy="openPrivacy()" />
+      </Transition>
     </RouterView>
 
     <LegalModal :open="legalOpen" @close="legalOpen = false" />

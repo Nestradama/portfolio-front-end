@@ -181,10 +181,10 @@ export const adminApi = {
       csrf,
     }),
 
-  createTag: (payload: { name: string; stack: string | null }, csrf: string) =>
+  createTag: (payload: { name: string; stack: string | null; visible: boolean }, csrf: string) =>
     request<Tag>('/admin/tags', { method: 'POST', body: payload, csrf }),
 
-  updateTag: (id: number, payload: { name: string; stack: string | null }, csrf: string) =>
+  updateTag: (id: number, payload: { name: string; stack: string | null; visible: boolean }, csrf: string) =>
     request<Tag>(`/admin/tags/${id}`, { method: 'PUT', body: payload, csrf }),
 
   deleteTag: (id: number, csrf: string) =>

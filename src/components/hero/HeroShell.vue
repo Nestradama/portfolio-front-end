@@ -20,7 +20,7 @@ const emit = defineEmits<{ openPrivacy: []}>()
         <HeroNav :active="activeTab" @select="activeTab = $event" />
       </div>
       <Transition name="fade" mode="out-in">
-      <HeroAboutMe @select="activeTab = $event" v-if="activeTab === 'me'" />
+      <HeroAboutMe v-if="activeTab === 'me'" />
       <HeroStack v-else-if="activeTab === 'stack'" />
       <HeroContact @open-privacy="emit('openPrivacy')" v-else-if="activeTab === 'contact'" />
       </Transition>

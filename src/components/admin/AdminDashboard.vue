@@ -46,7 +46,9 @@ const error = ref('')
 onMounted(load)
 
 async function load() {
-  loading.value = true
+  if (content.value === null) {
+    loading.value = true
+  }
   error.value = ''
 
   try {
@@ -239,8 +241,8 @@ function messageOf(failure: unknown): string {
           v-for="item in tabs"
           :key="item.id"
           type="button"
-          class="px-4 py-2 font-mono text-[10px] uppercase tracking-widest"
-          :class="tab === item.id ? 'border-b-2 border-accent text-accent' : 'text-muted'"
+          class="px-3 py-2 text-sm font-medium transition-colors"
+          :class="tab === item.id ? 'border-b-2 border-accent bg-(--card) text-accent' : 'border-b-2 border-transparent text-muted hover:text-ink'"
           @click="tab = item.id; mode = null"
         >
           {{ item.label }}<span v-if="item.id === 'projects'"> ({{ content.projects.length }})</span><span v-if="item.id === 'vitrines'"> ({{ content.vitrines.length }})</span>
@@ -306,30 +308,30 @@ function messageOf(failure: unknown): string {
         </div>
         <div class="overflow-x-auto border border-(--border)">
           <table class="w-full text-left text-sm">
-            <thead class="bg-(--card) font-mono text-[10px] uppercase tracking-widest text-muted">
+            <thead class="bg-(--card) text-xs font-semibold uppercase tracking-wide text-muted">
               <tr>
                 <th class="p-3">Titre</th>
                 <th class="p-3">Contexte</th>
                 <th class="p-3">État</th>
-                <th class="p-3">Ordre</th>
                 <th class="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(project, index) in content.projects" :key="project.id" class="border-t border-(--border)">
-                <td class="p-3 font-medium">{{ project.title }}</td>
+                <td class="p-3">
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter le projet" @click="moveProject(index, -1)">↑</button>
+                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.projects.length - 1" aria-label="Descendre le projet" @click="moveProject(index, 1)">↓</button>
+                    </div>
+                    <span class="font-medium">{{ project.title }}</span>
+                  </div>
+                </td>
                 <td class="p-3 text-muted">{{ project.context }}</td>
                 <td class="p-3">
                   <span :class="project.published ? 'text-green-400' : 'text-muted'">
                     {{ project.published ? 'Publié' : 'Masqué' }}
                   </span>
-                </td>
-                <td class="p-3">
-                  <div class="flex items-center gap-2">
-                    <span class="font-mono text-xs text-muted">{{ project.sortOrder }}</span>
-                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter le projet" @click="moveProject(index, -1)">↑</button>
-                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.projects.length - 1" aria-label="Descendre le projet" @click="moveProject(index, 1)">↓</button>
-                  </div>
                 </td>
                 <td class="p-3">
                   <div class="flex gap-3">
@@ -349,30 +351,30 @@ function messageOf(failure: unknown): string {
         </div>
         <div class="overflow-x-auto border border-(--border)">
           <table class="w-full text-left text-sm">
-            <thead class="bg-(--card) font-mono text-[10px] uppercase tracking-widest text-muted">
+            <thead class="bg-(--card) text-xs font-semibold uppercase tracking-wide text-muted">
               <tr>
                 <th class="p-3">Titre</th>
                 <th class="p-3">Lien</th>
                 <th class="p-3">État</th>
-                <th class="p-3">Ordre</th>
                 <th class="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(vitrine, index) in content.vitrines" :key="vitrine.id" class="border-t border-(--border)">
-                <td class="p-3 font-medium">{{ vitrine.title }}</td>
+                <td class="p-3">
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1">
+                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter la vitrine" @click="moveVitrine(index, -1)">↑</button>
+                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.vitrines.length - 1" aria-label="Descendre la vitrine" @click="moveVitrine(index, 1)">↓</button>
+                    </div>
+                    <span class="font-medium">{{ vitrine.title }}</span>
+                  </div>
+                </td>
                 <td class="p-3 font-mono text-xs text-muted">{{ vitrine.link ?? '—' }}</td>
                 <td class="p-3">
                   <span :class="vitrine.published ? 'text-green-400' : 'text-muted'">
                     {{ vitrine.published ? 'Publié' : 'Masqué' }}
                   </span>
-                </td>
-                <td class="p-3">
-                  <div class="flex items-center gap-2">
-                    <span class="font-mono text-xs text-muted">{{ vitrine.sortOrder }}</span>
-                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter la vitrine" @click="moveVitrine(index, -1)">↑</button>
-                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.vitrines.length - 1" aria-label="Descendre la vitrine" @click="moveVitrine(index, 1)">↓</button>
-                  </div>
                 </td>
                 <td class="p-3">
                   <div class="flex gap-3">

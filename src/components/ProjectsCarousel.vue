@@ -7,13 +7,16 @@ import ProjectCard from './ProjectCard.vue'
 import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
 
-const { projects, settings } = useContent()
+const { projects, settings, tags: tagCatalog } = useContent()
 const activeTag = ref('')
 const featuredProjects = computed(() => projects.value.filter((project) => project.featured !== false))
+const hiddenTags = computed(
+  () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
+)
 const tags = computed(() =>
-  [...new Set(featuredProjects.value.flatMap((project) => project.tags ?? []))].sort((a, b) =>
-    a.localeCompare(b),
-  ),
+  [...new Set(featuredProjects.value.flatMap((project) => project.tags ?? []))]
+    .filter((tag) => !hiddenTags.value.has(tag))
+    .sort((a, b) => a.localeCompare(b)),
 )
 const visibleProjects = computed(() =>
   activeTag.value

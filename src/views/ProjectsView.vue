@@ -6,13 +6,16 @@ import TagFilters from '@/components/TagFilters.vue'
 import VitrineSection from '@/components/VitrineSection.vue'
 import type { Project } from '@/data/projects'
 
-const { projects, settings } = useContent()
+const { projects, settings, tags: tagCatalog } = useContent()
 const activeTag = ref('')
 const visibleProjects = computed(() => projects.value.filter((project) => project.showOnProjects !== false))
+const hiddenTags = computed(
+  () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
+)
 const tags = computed(() =>
-  [...new Set(visibleProjects.value.flatMap((project) => project.tags ?? []))].sort((a, b) =>
-    a.localeCompare(b),
-  ),
+  [...new Set(visibleProjects.value.flatMap((project) => project.tags ?? []))]
+    .filter((tag) => !hiddenTags.value.has(tag))
+    .sort((a, b) => a.localeCompare(b)),
 )
 const filteredProjects = computed(() =>
   activeTag.value

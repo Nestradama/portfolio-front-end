@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import HeroStack from '@/components/hero/HeroStack.vue'
 import HeroContact from '@/components/hero/HeroContact.vue'
 import SectionHeader from '@/components/SectionHeader.vue'
+import SafeText from '@/components/SafeText.vue'
 import { useContent } from '@/composables/useContent'
 
+const route = useRoute()
 const emit = defineEmits<{ openPrivacy: [] }>()
 const { settings } = useContent()
+
+function scrollToHash() {
+  if (!route.hash) return
+  document.querySelector(route.hash)?.scrollIntoView({ behavior: 'smooth' })
+}
+
+onMounted(scrollToHash)
+watch(() => route.hash, () => requestAnimationFrame(scrollToHash))
 </script>
 
 <template>
@@ -16,7 +28,7 @@ const { settings } = useContent()
         {{ settings.about.heading }}
       </h1>
       <div v-if="settings.sections.aboutIntro" class="mt-7 max-w-3xl space-y-4 text-base leading-relaxed text-muted sm:text-lg">
-        <p v-for="(paragraph, index) in settings.about.paragraphs" :key="index">{{ paragraph }}</p>
+        <p v-for="(paragraph, index) in settings.about.paragraphs" :key="index"><SafeText :text="paragraph" /></p>
       </div>
     </header>
 

@@ -9,20 +9,26 @@ const emit = defineEmits<{ select: [tab: 'me' | 'stack' | 'contact'] }>()
 <template>
   <nav class="flex flex-row md:flex-col flex-wrap gap-4 md:gap-3 font-mono text-[0.75rem] md:text-[1rem] sm:text-[0.8rem] uppercase tracking-widest w-full" aria-label="Navigation principale">
     <button
+        type="button"
         :class="active === 'me' ? 'text-accent underline' : 'text-muted'"
+        :aria-pressed="active === 'me'"
         @click="emit('select', 'me')"
     >01. Moi
     </button>
     <p class="md:hidden">|</p>
     <button
+        type="button"
         :class="active === 'stack' ? 'text-accent underline' : 'text-muted'"
+        :aria-pressed="active === 'stack'"
         @click="emit('select', 'stack')"
     >02. Stack
     </button>
     <p class="md:hidden">|</p>
 
     <button
+        type="button"
         :class="active === 'contact' ? 'text-accent underline' : 'text-muted'"
+        :aria-pressed="active === 'contact'"
         @click="emit('select', 'contact')"
     >03. Contact
     </button>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useContent } from '@/composables/useContent'
+import SafeText from '@/components/SafeText.vue'
 
-const emit = defineEmits<{ select: [tab: 'me' | 'stack' | 'contact'] }>()
 const { settings } = useContent()
 </script>
 
@@ -17,11 +17,7 @@ const { settings } = useContent()
         :key="index"
         class="block"
         :class="{ 'mb-4': index < settings.home.paragraphs.length - 1 }"
-      >{{ paragraph }}</span>
-      <button
-        class="mt-2 text-accent hover:underline underline-offset-4 cursor-pointer"
-        @click="emit('select','contact')"
-      >Me contacter</button>
+      ><SafeText :text="paragraph" /></span>
     </p>
   </div>
 </template>

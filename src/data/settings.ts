@@ -57,7 +57,7 @@ export const defaultSettings: SiteSettings = {
     name: 'Corentin.',
     paragraphs: [
       "Back-end de préférence, et pas mal de projets perso parce que c'est comme ça que j'apprends. Autodidacte, en formation webdev (OpenClassrooms), je vise une alternance Java.",
-      "Si vous avez des projets qui ont besoin de solutions, n'hésitez pas à me contacter.",
+      "Si vous avez des projets qui ont besoin de solutions, n'hésitez pas à [me contacter](mailto:roquin.corentin@protonmail.com).",
     ],
     photo: '/assets/static/profile_picture.webp',
   },

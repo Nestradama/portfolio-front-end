@@ -9,7 +9,9 @@ const { settings } = useContent()
 </script>
 
 <template>
-  <HeroShell v-if="settings.sections.homeHero" @open-privacy="emit('openPrivacy')" />
-  <ProjectsCarousel v-if="settings.sections.homeProjects" />
-  <VitrineSection v-if="settings.sections.homeVitrines" location="home" />
+  <div>
+    <HeroShell v-if="settings.sections.homeHero" @open-privacy="emit('openPrivacy')" />
+    <ProjectsCarousel v-if="settings.sections.homeProjects" />
+    <VitrineSection v-if="settings.sections.homeVitrines" location="home" />
+  </div>
 </template>

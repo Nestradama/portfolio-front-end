@@ -69,7 +69,7 @@ function move(index: number, offset: number) {
     </ul>
 
     <div class="flex gap-2">
-      <input v-model="input" :placeholder="placeholder" :class="adminInput" @keydown.enter.prevent="add">
+      <input v-model="input" :placeholder="placeholder" :aria-label="label || placeholder" :class="adminInput" @keydown.enter.prevent="add">
       <button type="button" :class="adminGhostButton" @click="add">Ajouter</button>
     </div>
   </div>

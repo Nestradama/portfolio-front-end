@@ -92,6 +92,7 @@ function submit() {
       <div class="mt-4">
         <label for="home-paragraphs" :class="adminLabel">Paragraphes (une ligne vide entre chaque)</label>
         <textarea id="home-paragraphs" v-model="form.homeParagraphs" rows="5" :class="adminInput"></textarea>
+        <p class="mt-1 text-xs text-muted">Liens acceptés : <code>[texte](https://…)</code>, <code>[texte](mailto:…)</code> ou <code>[texte](/#contact)</code>.</p>
       </div>
       <div class="mt-4">
         <label for="home-photo" :class="adminLabel">Photo</label>
@@ -108,6 +109,7 @@ function submit() {
       <div class="mt-4">
         <label for="about-paragraphs" :class="adminLabel">Paragraphes (une ligne vide entre chaque)</label>
         <textarea id="about-paragraphs" v-model="form.aboutParagraphs" rows="5" :class="adminInput"></textarea>
+        <p class="mt-1 text-xs text-muted">Liens acceptés : <code>[texte](https://…)</code> ou <code>[texte](mailto:…)</code>.</p>
       </div>
       <div class="mt-4">
         <label for="about-photo" :class="adminLabel">Photo</label>
