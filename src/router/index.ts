@@ -31,6 +31,16 @@ const routes = [
             description: "Parcours, stack technique et contact de Corentin ROQUIN, développeur back-end.",
         },
     },
+    {
+        path: '/admin',
+        name: 'admin',
+        component: () => import('@/views/AdminView.vue'),
+        meta: {
+            title: 'Administration — Corentin ROQUIN',
+            description: 'Espace de gestion du portfolio.',
+            robots: 'noindex, nofollow',
+        },
+    },
     { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
@@ -52,6 +62,15 @@ router.afterEach((to) => {
         document.head.appendChild(meta)
     }
     meta.content = description
+
+    const robots = typeof to.meta.robots === 'string' ? to.meta.robots : 'index, follow'
+    let robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]')
+    if (!robotsMeta) {
+        robotsMeta = document.createElement('meta')
+        robotsMeta.name = 'robots'
+        document.head.appendChild(robotsMeta)
+    }
+    robotsMeta.content = robots
 })
 
 export default router
