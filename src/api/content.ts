@@ -1,4 +1,5 @@
 import type { Project } from '@/data/projects'
+import type { SiteSettings } from '@/data/settings'
 import type { Vitrine } from '@/data/vitrine'
 
 export interface ApiProject {
@@ -31,6 +32,7 @@ export interface ApiVitrine {
 export interface ContentPayload {
   version: number
   updatedAt: string
+  settings: SiteSettings
   projects: ApiProject[]
   vitrines: ApiVitrine[]
 }
@@ -64,6 +66,7 @@ function mapVitrine(vitrine: ApiVitrine): Vitrine {
 export async function fetchContent(): Promise<{
   projects: Project[]
   vitrines: Vitrine[]
+  settings: SiteSettings
   version: number
 }> {
   const response = await fetch('/api/content', {
@@ -80,6 +83,7 @@ export async function fetchContent(): Promise<{
   return {
     projects: payload.projects.map(mapProject),
     vitrines: payload.vitrines.map(mapVitrine),
+    settings: payload.settings,
     version: payload.version,
   }
 }

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useContent } from '@/composables/useContent'
+import VitrineSection from '@/components/VitrineSection.vue'
 
-const { projects } = useContent()
+const { projects, settings } = useContent()
 </script>
 
 <template>
@@ -18,7 +19,7 @@ const { projects } = useContent()
       </p>
     </header>
 
-    <div class="space-y-8 md:space-y-10">
+    <div v-if="settings.sections.projectsList" class="space-y-8 md:space-y-10">
       <article
         v-for="(project, index) in projects"
         :key="project.id"
@@ -70,5 +71,7 @@ const { projects } = useContent()
         </div>
       </article>
     </div>
+
+    <VitrineSection v-if="settings.sections.projectsVitrines" />
   </section>
 </template>

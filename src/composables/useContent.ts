@@ -1,10 +1,12 @@
 import { ref } from 'vue'
 import { fetchContent } from '@/api/content'
 import { projects as fallbackProjects, type Project } from '@/data/projects'
+import { defaultSettings, type SiteSettings } from '@/data/settings'
 import { vitrines as fallbackVitrines, type Vitrine } from '@/data/vitrine'
 
 const projects = ref<Project[]>(fallbackProjects)
 const vitrines = ref<Vitrine[]>(fallbackVitrines)
+const settings = ref<SiteSettings>(defaultSettings)
 const version = ref(0)
 const loading = ref(false)
 const error = ref('')
@@ -28,6 +30,7 @@ async function load(): Promise<void> {
     .then((content) => {
       projects.value = content.projects
       vitrines.value = content.vitrines
+      settings.value = content.settings
       version.value = content.version
       loaded = true
     })
@@ -52,6 +55,7 @@ export function useContent() {
   return {
     projects,
     vitrines,
+    settings,
     version,
     loading,
     error,

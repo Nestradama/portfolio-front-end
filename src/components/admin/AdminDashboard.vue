@@ -5,8 +5,12 @@ import { adminApi, ApiError } from '@/api/admin'
 import type { ApiProject, ApiVitrine } from '@/api/content'
 import ProjectForm from './ProjectForm.vue'
 import VitrineForm from './VitrineForm.vue'
+import ContentSettingsForm from './ContentSettingsForm.vue'
+import SeoForm from './SeoForm.vue'
+import VisibilityForm from './VisibilityForm.vue'
 import { adminButton, adminGhostButton } from './adminStyles'
 import type { ProjectPayload, VitrinePayload } from './types'
+import type { SiteSettings } from '@/data/settings'
 
 const { csrf, username } = defineProps<{
   csrf: string
@@ -15,8 +19,18 @@ const { csrf, username } = defineProps<{
 
 const emit = defineEmits<{ logout: [] }>()
 
+type Tab = 'projects' | 'vitrines' | 'content' | 'seo' | 'sections'
+
+const tabs: Array<{ id: Tab; label: string }> = [
+  { id: 'projects', label: 'Projets' },
+  { id: 'vitrines', label: 'Vitrines' },
+  { id: 'content', label: 'Contenu' },
+  { id: 'seo', label: 'SEO' },
+  { id: 'sections', label: 'Sections' },
+]
+
 const content = ref<AdminContent | null>(null)
-const tab = ref<'projects' | 'vitrines'>('projects')
+const tab = ref<Tab>('projects')
 const mode = ref<'project' | 'vitrine' | null>(null)
 const editingProject = ref<ApiProject | null>(null)
 const editingVitrine = ref<ApiVitrine | null>(null)
@@ -114,6 +128,20 @@ async function saveVitrine(payload: VitrinePayload) {
   }
 }
 
+async function saveSettings(payload: Partial<SiteSettings>) {
+  busy.value = true
+  error.value = ''
+
+  try {
+    await adminApi.updateSettings(payload, csrf)
+    await load()
+  } catch (failure) {
+    error.value = messageOf(failure)
+  } finally {
+    busy.value = false
+  }
+}
+
 async function removeProject(project: ApiProject) {
   if (!window.confirm(`Supprimer « ${project.title} » ?`)) {
     return
@@ -165,19 +193,17 @@ function messageOf(failure: unknown): string {
     <p v-if="loading" class="text-muted font-mono text-sm" role="status">Chargement…</p>
 
     <template v-if="!loading && content">
-      <nav class="mb-6 flex gap-2 border-b border-(--border)" aria-label="Sections admin">
+      <nav class="mb-6 flex flex-wrap gap-2 border-b border-(--border)" aria-label="Sections admin">
         <button
+          v-for="item in tabs"
+          :key="item.id"
           type="button"
           class="px-4 py-2 font-mono text-[10px] uppercase tracking-widest"
-          :class="tab === 'projects' ? 'border-b-2 border-accent text-accent' : 'text-muted'"
-          @click="tab = 'projects'; mode = null"
-        >Projets ({{ content.projects.length }})</button>
-        <button
-          type="button"
-          class="px-4 py-2 font-mono text-[10px] uppercase tracking-widest"
-          :class="tab === 'vitrines' ? 'border-b-2 border-accent text-accent' : 'text-muted'"
-          @click="tab = 'vitrines'; mode = null"
-        >Vitrines ({{ content.vitrines.length }})</button>
+          :class="tab === item.id ? 'border-b-2 border-accent text-accent' : 'text-muted'"
+          @click="tab = item.id; mode = null"
+        >
+          {{ item.label }}<span v-if="item.id === 'projects'"> ({{ content.projects.length }})</span><span v-if="item.id === 'vitrines'"> ({{ content.vitrines.length }})</span>
+        </button>
       </nav>
 
       <ProjectForm
@@ -196,6 +222,30 @@ function messageOf(failure: unknown): string {
         :error="error"
         @save="saveVitrine"
         @cancel="cancelForm"
+      />
+
+      <ContentSettingsForm
+        v-if="tab === 'content'"
+        :settings="content.settings"
+        :busy="busy"
+        :error="error"
+        @save="saveSettings"
+      />
+
+      <SeoForm
+        v-if="tab === 'seo'"
+        :settings="content.settings"
+        :busy="busy"
+        :error="error"
+        @save="saveSettings"
+      />
+
+      <VisibilityForm
+        v-if="tab === 'sections'"
+        :settings="content.settings"
+        :busy="busy"
+        :error="error"
+        @save="saveSettings"
       />
 
       <template v-if="tab === 'projects'">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { RouterView } from 'vue-router'
+import { onMounted, ref, watchEffect } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 
 import SiteHeader from '@/components/SiteHeader.vue'
 import SiteFooter from '@/components/SiteFooter.vue'
@@ -13,8 +13,34 @@ const privacyOpen = ref(false)
 const openLegal = () => (legalOpen.value = true)
 const openPrivacy = () => (privacyOpen.value = true)
 
-const { load } = useContent()
+const route = useRoute()
+const { load, settings } = useContent()
 onMounted(load)
+
+function setMeta(attribute: 'name' | 'property', key: string, content: string) {
+  let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`)
+  if (!element) {
+    element = document.createElement('meta')
+    element.setAttribute(attribute, key)
+    document.head.appendChild(element)
+  }
+  element.content = content
+}
+
+watchEffect(() => {
+  if (route.name === 'admin') {
+    return
+  }
+
+  const page = route.name === 'projects' ? 'projects' : route.name === 'about' ? 'about' : 'home'
+  const meta = settings.value.seo.pages[page]
+
+  document.title = meta.title
+  setMeta('name', 'description', meta.description)
+  setMeta('property', 'og:title', meta.title)
+  setMeta('property', 'og:description', meta.description)
+  setMeta('property', 'og:site_name', settings.value.seo.siteName)
+})
 </script>
 
 <template>
@@ -30,8 +56,8 @@ onMounted(load)
   </main>
 
   <SiteFooter
-    email="roquin.corentin@protonmail.com"
-    github="Nestradama"
+    :email="settings.contact.email"
+    :github="settings.contact.github"
     @open-legal="openLegal()"
     @open-privacy="openPrivacy()"
   />

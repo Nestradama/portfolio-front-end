@@ -2,8 +2,10 @@
 import HeroStack from '@/components/hero/HeroStack.vue'
 import HeroContact from '@/components/hero/HeroContact.vue'
 import SectionHeader from '@/components/SectionHeader.vue'
+import { useContent } from '@/composables/useContent'
 
 const emit = defineEmits<{ openPrivacy: [] }>()
+const { settings } = useContent()
 </script>
 
 <template>
@@ -11,17 +13,10 @@ const emit = defineEmits<{ openPrivacy: [] }>()
     <header class="mb-14 border-b border-(--border) pb-10 md:mb-20">
       <p class="mb-3 font-mono text-xs uppercase tracking-widest text-muted">À propos</p>
       <h1 id="about-heading" class="max-w-4xl font-heading text-[clamp(2rem,7vw,4.5rem)] font-bold leading-[1.05] tracking-tight">
-        Parcours et objectif.
+        {{ settings.about.heading }}
       </h1>
-      <div class="mt-7 max-w-3xl space-y-4 text-base leading-relaxed text-muted sm:text-lg">
-        <p>
-          Je m'appelle Corentin. J'ai suivi un bac STI2D, puis j'ai appris le développement en
-          autodidacte. Je suis aujourd'hui en formation webdev chez OpenClassrooms.
-        </p>
-        <p>
-          Je travaille principalement sur le back-end. J'aime créer des outils, en particulier
-          autour des API et des données.
-        </p>
+      <div v-if="settings.sections.aboutIntro" class="mt-7 max-w-3xl space-y-4 text-base leading-relaxed text-muted sm:text-lg">
+        <p v-for="(paragraph, index) in settings.about.paragraphs" :key="index">{{ paragraph }}</p>
       </div>
     </header>
 
@@ -107,12 +102,12 @@ const emit = defineEmits<{ openPrivacy: [] }>()
       </div>
     </section>
 
-    <section id="stack" class="mb-16 scroll-mt-24 md:mb-24" aria-labelledby="stack-heading">
+    <section v-if="settings.sections.aboutStack" id="stack" class="mb-16 scroll-mt-24 md:mb-24" aria-labelledby="stack-heading">
       <SectionHeader section-name="Stack" heading-id="stack-heading" />
       <HeroStack heading-level="h2" />
     </section>
 
-    <section id="contact" class="scroll-mt-24" aria-labelledby="contact-heading">
+    <section v-if="settings.sections.aboutContact" id="contact" class="scroll-mt-24" aria-labelledby="contact-heading">
       <SectionHeader section-name="Contact" heading-id="contact-heading" />
       <p class="mb-8 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
         Une offre d'alternance, un projet à discuter, ou simplement une question ? Écris-moi.

@@ -1,5 +1,7 @@
 import type { ApiProject, ApiVitrine } from './content'
 
+import type { SiteSettings } from '@/data/settings'
+
 export interface MeResponse {
   authenticated: boolean
   username?: string
@@ -15,6 +17,7 @@ export interface AuthResponse {
 export interface AdminContent {
   version: number
   updatedAt: string
+  settings: SiteSettings
   projects: ApiProject[]
   vitrines: ApiVitrine[]
 }
@@ -115,6 +118,13 @@ export const adminApi = {
     }),
 
   content: () => request<AdminContent>('/admin/content'),
+
+  updateSettings: (payload: Partial<SiteSettings>, csrf: string) =>
+    request<{ ok: true; settings: SiteSettings; version: number }>('/admin/settings', {
+      method: 'PUT',
+      body: payload,
+      csrf,
+    }),
 
   createProject: (payload: ProjectPayload, csrf: string) =>
     request<ApiProject>('/admin/projects', { method: 'POST', body: payload, csrf }),
