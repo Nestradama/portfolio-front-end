@@ -13,8 +13,8 @@ export const vitrines: Vitrine[] = [
         title: "Template site Graphiste",
         desc: "Une template destinée aux artistes du visuel, pour une communication simple et directe.",
         img: "/assets/static/graphist_website_preview.webp",
-        link: null,
-        linkText: "Template reservée"
+        link: "/graph_showcase/",
+        linkText: "Voir le Projet"
     },
     {
         id: 2,
