@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+withDefaults(defineProps<{ headingLevel?: 'h1' | 'h2' }>(), { headingLevel: 'h1' })
 const emit = defineEmits<{openPrivacy: []}>()
 
 const name = ref('')
@@ -75,7 +76,11 @@ function clearStatusSoon() {
 </script>
 
 <template>
-  <form id="contact-form" :action="ACTION_URL" method="POST" @submit.prevent="handleSubmit" class="space-y-6 max-w-lg">
+  <div>
+    <component :is="headingLevel" class="font-heading text-[clamp(2.2rem,10vw,4.5rem)] font-bold mb-4 leading-[1.1] tracking-tight">
+      Discutons ensemble.
+    </component>
+    <form id="contact-form" :action="ACTION_URL" method="POST" @submit.prevent="handleSubmit" class="space-y-6 max-w-lg">
     <input type="hidden" name="access_key" :value="ACCESS_KEY">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
@@ -101,4 +106,5 @@ function clearStatusSoon() {
     <div class="text-sm" role="status" aria-live="polite"
          :class="{ 'text-red-500': statusColor === 'error', 'text-green-500': statusColor === 'success' }">{{ status }}</div>
   </form>
+  </div>
 </template>
