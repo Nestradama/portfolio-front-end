@@ -32,6 +32,7 @@ const tabs: Array<{ id: Tab; label: string }> = [
 
 const activeTab = ref<Tab>('content')
 
+// The form uses v-show rather than v-if so every field remains mounted/submittable.
 const form = reactive({
   title: '',
   context: '',

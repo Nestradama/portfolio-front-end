@@ -29,6 +29,7 @@ function remove(index: number) {
 }
 
 function move(index: number, offset: number) {
+  // Use explicit swaps so keyboard-triggered moves match the visible order.
   const target = index + offset
   if (target < 0 || target >= props.modelValue.length) return
 

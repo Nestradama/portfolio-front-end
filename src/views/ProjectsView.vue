@@ -31,6 +31,7 @@ interface ProjectGroup {
 }
 
 const groups = computed<ProjectGroup[]>(() => {
+  // Consecutive card projects share one grid; detailed blocks stay full width.
   const result: ProjectGroup[] = []
 
   filteredProjects.value.forEach((project, index) => {
@@ -80,19 +81,77 @@ const groups = computed<ProjectGroup[]>(() => {
         </div>
 
         <template v-else>
+          <template v-if="group.mode === 'detailed-preview'">
+            <article
+              v-for="(project, index) in group.projects"
+              :key="project.id"
+              class="neo-card p-5 md:p-7"
+            >
+              <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_16rem]">
+                <div class="min-w-0">
+                  <div class="mb-4 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-muted">
+                    <span class="text-muted">{{ project.context }}</span>
+                    <span>0{{ group.start + index + 1 }}</span>
+                  </div>
+
+                  <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">{{ project.title }}</h2>
+                  <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">{{ project.desc }}</p>
+
+                  <div class="mt-5 border-t border-(--border) pt-4">
+                    <h3 class="mb-3 font-mono text-[10px] uppercase tracking-widest text-accent">Pourquoi ce projet</h3>
+                    <ul class="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+                      <li
+                        v-for="reason in project.reasons"
+                        :key="reason"
+                        class="flex gap-2 text-sm leading-relaxed text-muted"
+                      >
+                        <span class="mt-0.5 text-pink" aria-hidden="true">↳</span>
+                        <span>{{ reason }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <aside class="flex flex-col gap-4 border-t border-(--border) pt-4 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+                  <img
+                    v-if="project.detailImage"
+                    :src="project.detailImage"
+                    :alt="`Aperçu de ${project.title}`"
+                    class="aspect-video w-full border border-(--border) object-cover"
+                    loading="lazy"
+                  >
+
+                  <div>
+                    <h3 class="mb-2 font-mono text-[10px] uppercase tracking-widest text-accent">Stack</h3>
+                    <div class="flex flex-wrap gap-1.5">
+                      <span
+                        v-for="tech in project.detailedStack"
+                        :key="tech"
+                        class="border border-(--border) px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted"
+                      >{{ tech }}</span>
+                    </div>
+                  </div>
+
+                  <a
+                    v-if="project.link !== null"
+                    :href="project.link"
+                    class="mt-auto inline-flex w-fit border border-(--border) px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
+                  >{{ project.linkText }} ↗</a>
+                  <span
+                    v-else
+                    class="mt-auto inline-flex w-fit border border-(--border) px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-muted/60"
+                  >{{ project.linkText }}</span>
+                </aside>
+              </div>
+            </article>
+          </template>
+
           <article
+            v-else
             v-for="(project, index) in group.projects"
             :key="project.id"
             class="neo-card p-6 md:p-10"
           >
-            <img
-              v-if="group.mode === 'detailed-preview' && project.detailImage"
-              :src="project.detailImage"
-              :alt="`Aperçu de ${project.title}`"
-              class="mb-8 max-h-96 w-full border border-(--border) object-cover"
-              loading="lazy"
-            >
-
             <div class="mb-6 flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-muted">
               <span class="text-muted">{{ project.context }}</span>
               <span>0{{ group.start + index + 1 }}</span>
@@ -142,6 +201,8 @@ const groups = computed<ProjectGroup[]>(() => {
       </template>
     </div>
 
-    <VitrineSection v-if="settings.sections.projectsVitrines" location="projects" />
+    <div v-if="settings.sections.projectsVitrines" class="mt-16 border-t border-(--border) pt-12 md:mt-24 md:pt-16">
+      <VitrineSection location="projects" />
+    </div>
   </section>
 </template>

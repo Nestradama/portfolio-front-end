@@ -7,6 +7,7 @@ const props = defineProps<{ text: string }>()
 type Part = { text: string; href?: string; internal?: boolean }
 
 function resolve(url: string): { href: string; internal: boolean } | null {
+  // Same-origin absolute links are converted to RouterLinks to avoid full reloads.
   if (url.startsWith('#') || url.startsWith('/')) {
     return { href: url, internal: true }
   }

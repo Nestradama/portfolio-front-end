@@ -51,6 +51,7 @@ const auditError = ref('')
 onMounted(load)
 
 async function load() {
+  // Refreshes keep the dashboard mounted so admin scroll position is preserved.
   if (content.value === null) {
     loading.value = true
   }
