@@ -24,6 +24,15 @@ export interface AdminContent {
   tags: Tag[]
 }
 
+export interface AuditEntry {
+  id: number
+  username: string
+  action: string
+  target: string | null
+  ip: string | null
+  createdAt: string
+}
+
 export interface ProjectPayload {
   title: string
   context: string
@@ -127,6 +136,8 @@ export const adminApi = {
     }),
 
   content: () => request<AdminContent>('/admin/content'),
+
+  audit: () => request<{ entries: AuditEntry[] }>('/admin/audit'),
 
   upload: async (file: File, csrf: string) => {
     const body = new FormData()

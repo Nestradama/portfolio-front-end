@@ -13,7 +13,13 @@ const { settings } = useContent()
 
 function scrollToHash() {
   if (!route.hash) return
-  document.querySelector(route.hash)?.scrollIntoView({ behavior: 'smooth' })
+  let id = route.hash.slice(1)
+  try {
+    id = decodeURIComponent(id)
+  } catch {
+    return
+  }
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 }
 
 onMounted(scrollToHash)

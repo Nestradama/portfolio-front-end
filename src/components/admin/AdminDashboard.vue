@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import type { AdminContent } from '@/api/admin'
+import type { AdminContent, AuditEntry } from '@/api/admin'
 import { adminApi, ApiError } from '@/api/admin'
 import type { ApiProject, ApiVitrine } from '@/api/content'
 import ProjectForm from './ProjectForm.vue'
@@ -9,6 +9,7 @@ import ContentSettingsForm from './ContentSettingsForm.vue'
 import SeoForm from './SeoForm.vue'
 import VisibilityForm from './VisibilityForm.vue'
 import TagsManager from './TagsManager.vue'
+import AuditLog from './AuditLog.vue'
 import { adminButton, adminGhostButton } from './adminStyles'
 import type { ProjectPayload, VitrinePayload } from './types'
 import type { SiteSettings } from '@/data/settings'
@@ -20,7 +21,7 @@ const { csrf, username } = defineProps<{
 
 const emit = defineEmits<{ logout: [] }>()
 
-type Tab = 'projects' | 'vitrines' | 'content' | 'seo' | 'sections' | 'tags'
+type Tab = 'projects' | 'vitrines' | 'content' | 'seo' | 'sections' | 'tags' | 'audit'
 
 const tabs: Array<{ id: Tab; label: string }> = [
   { id: 'projects', label: 'Projets' },
@@ -29,6 +30,7 @@ const tabs: Array<{ id: Tab; label: string }> = [
   { id: 'content', label: 'Contenu' },
   { id: 'seo', label: 'SEO' },
   { id: 'sections', label: 'Sections' },
+  { id: 'audit', label: 'Journal' },
 ]
 
 const content = ref<AdminContent | null>(null)
@@ -42,6 +44,9 @@ const editingVitrine = ref<ApiVitrine | null>(null)
 const loading = ref(true)
 const busy = ref(false)
 const error = ref('')
+const auditEntries = ref<AuditEntry[]>([])
+const auditLoading = ref(false)
+const auditError = ref('')
 
 onMounted(load)
 
@@ -61,6 +66,31 @@ async function load() {
     error.value = messageOf(failure)
   } finally {
     loading.value = false
+  }
+}
+
+function selectTab(next: Tab) {
+  tab.value = next
+  mode.value = null
+  if (next === 'audit') {
+    void loadAudit()
+  }
+}
+
+async function loadAudit() {
+  auditLoading.value = true
+  auditError.value = ''
+
+  try {
+    auditEntries.value = (await adminApi.audit()).entries
+  } catch (failure) {
+    if (failure instanceof ApiError && failure.status === 401) {
+      emit('logout')
+      return
+    }
+    auditError.value = messageOf(failure)
+  } finally {
+    auditLoading.value = false
   }
 }
 
@@ -243,7 +273,7 @@ function messageOf(failure: unknown): string {
           type="button"
           class="px-3 py-2 text-sm font-medium transition-colors"
           :class="tab === item.id ? 'border-b-2 border-accent bg-(--card) text-accent' : 'border-b-2 border-transparent text-muted hover:text-ink'"
-          @click="tab = item.id; mode = null"
+          @click="selectTab(item.id)"
         >
           {{ item.label }}<span v-if="item.id === 'projects'"> ({{ content.projects.length }})</span><span v-if="item.id === 'vitrines'"> ({{ content.vitrines.length }})</span>
         </button>
@@ -300,6 +330,13 @@ function messageOf(failure: unknown): string {
         :stack-options="stackOptions"
         :csrf="csrf"
         @changed="load"
+      />
+
+      <AuditLog
+        v-if="tab === 'audit'"
+        :entries="auditEntries"
+        :loading="auditLoading"
+        :error="auditError"
       />
 
       <template v-if="tab === 'projects'">
