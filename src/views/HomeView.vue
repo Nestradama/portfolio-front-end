@@ -11,5 +11,5 @@ const { settings } = useContent()
 <template>
   <HeroShell v-if="settings.sections.homeHero" @open-privacy="emit('openPrivacy')" />
   <ProjectsCarousel v-if="settings.sections.homeProjects" />
-  <VitrineSection v-if="settings.sections.homeVitrines" />
+  <VitrineSection v-if="settings.sections.homeVitrines" location="home" />
 </template>

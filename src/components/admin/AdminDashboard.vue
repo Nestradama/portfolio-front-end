@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import type { AdminContent } from '@/api/admin'
 import { adminApi, ApiError } from '@/api/admin'
 import type { ApiProject, ApiVitrine } from '@/api/content'
@@ -31,6 +31,11 @@ const tabs: Array<{ id: Tab; label: string }> = [
 
 const content = ref<AdminContent | null>(null)
 const tab = ref<Tab>('projects')
+const tagSuggestions = computed(() =>
+  [...new Set((content.value?.projects ?? []).flatMap((project) => project.tags ?? []))].sort((a, b) =>
+    a.localeCompare(b),
+  ),
+)
 const mode = ref<'project' | 'vitrine' | null>(null)
 const editingProject = ref<ApiProject | null>(null)
 const editingVitrine = ref<ApiVitrine | null>(null)
@@ -211,6 +216,7 @@ function messageOf(failure: unknown): string {
         :project="editingProject"
         :busy="busy"
         :error="error"
+        :tag-suggestions="tagSuggestions"
         @save="saveProject"
         @cancel="cancelForm"
       />

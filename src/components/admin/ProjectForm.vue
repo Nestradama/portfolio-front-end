@@ -8,6 +8,7 @@ const props = defineProps<{
   project: ApiProject | null
   busy: boolean
   error: string
+  tagSuggestions?: string[]
 }>()
 
 const emit = defineEmits<{
@@ -20,6 +21,9 @@ const form = reactive({
   context: '',
   shortDescription: '',
   description: '',
+  tags: '',
+  displayMode: 'card' as 'card' | 'detailed',
+  detailImage: '',
   stack: '',
   detailedStack: '',
   reasons: '',
@@ -28,6 +32,8 @@ const form = reactive({
   image: '',
   sortOrder: 0,
   published: true,
+  featured: true,
+  showOnProjects: true,
 })
 
 function fill(project: ApiProject | null) {
@@ -35,6 +41,9 @@ function fill(project: ApiProject | null) {
   form.context = project?.context ?? ''
   form.shortDescription = project?.shortDescription ?? ''
   form.description = project?.description ?? ''
+  form.tags = project?.tags.join(', ') ?? ''
+  form.displayMode = project?.displayMode ?? 'card'
+  form.detailImage = project?.detailImage ?? ''
   form.stack = project?.stack.join(', ') ?? ''
   form.detailedStack = project?.detailedStack.join(', ') ?? ''
   form.reasons = project?.reasons.join('\n') ?? ''
@@ -43,6 +52,8 @@ function fill(project: ApiProject | null) {
   form.image = project?.image ?? ''
   form.sortOrder = project?.sortOrder ?? 0
   form.published = project?.published ?? true
+  form.featured = project?.featured ?? true
+  form.showOnProjects = project?.showOnProjects ?? true
 }
 
 watch(() => props.project, fill, { immediate: true })
@@ -67,6 +78,9 @@ function submit() {
     context: form.context.trim(),
     shortDescription: form.shortDescription.trim(),
     description: form.description.trim(),
+    tags: splitComma(form.tags),
+    displayMode: form.displayMode,
+    detailImage: form.detailImage.trim() || null,
     stack: splitComma(form.stack),
     detailedStack: splitComma(form.detailedStack),
     reasons: splitLines(form.reasons),
@@ -75,6 +89,8 @@ function submit() {
     image: form.image.trim() || null,
     sortOrder: Number(form.sortOrder) || 0,
     published: form.published,
+    featured: form.featured,
+    showOnProjects: form.showOnProjects,
   })
 }
 </script>
@@ -100,6 +116,28 @@ function submit() {
     <div>
       <label for="project-description" :class="adminLabel">Description complète</label>
       <textarea id="project-description" v-model="form.description" rows="5" :class="adminInput"></textarea>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <div>
+        <label for="project-tags" :class="adminLabel">Tags (virgules, autocomplétion)</label>
+        <input id="project-tags" v-model="form.tags" list="project-tag-suggestions" :class="adminInput">
+        <datalist id="project-tag-suggestions">
+          <option v-for="tag in tagSuggestions ?? []" :key="tag" :value="tag" />
+        </datalist>
+      </div>
+      <div>
+        <label for="project-display-mode" :class="adminLabel">Affichage sur la page Projets</label>
+        <select id="project-display-mode" v-model="form.displayMode" :class="adminInput">
+          <option value="card">Carte</option>
+          <option value="detailed">Détaillé</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="project-detail-image" :class="adminLabel">Image détaillée</label>
+      <input id="project-detail-image" v-model="form.detailImage" placeholder="/assets/... ou /api/media/..." :class="adminInput">
     </div>
 
     <div class="grid gap-4 md:grid-cols-2">
@@ -144,6 +182,17 @@ function submit() {
       <input v-model="form.published" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
       Visible sur le site public
     </label>
+
+    <div class="flex flex-wrap gap-5">
+      <label class="flex items-center gap-3 text-sm text-muted">
+        <input v-model="form.featured" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+        Afficher sur l'accueil
+      </label>
+      <label class="flex items-center gap-3 text-sm text-muted">
+        <input v-model="form.showOnProjects" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+        Afficher sur la page Projets
+      </label>
+    </div>
 
     <p v-if="error" class="text-sm text-red-400" role="alert">{{ error }}</p>
 

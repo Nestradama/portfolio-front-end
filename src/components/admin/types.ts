@@ -3,6 +3,9 @@ export interface ProjectPayload {
   context: string
   shortDescription: string
   description: string
+  tags: string[]
+  displayMode: 'card' | 'detailed'
+  detailImage: string | null
   stack: string[]
   detailedStack: string[]
   reasons: string[]
@@ -11,6 +14,8 @@ export interface ProjectPayload {
   image: string | null
   sortOrder: number
   published: boolean
+  featured: boolean
+  showOnProjects: boolean
 }
 
 export interface VitrinePayload {
@@ -21,4 +26,6 @@ export interface VitrinePayload {
   linkText: string
   sortOrder: number
   published: boolean
+  featured: boolean
+  showOnProjects: boolean
 }

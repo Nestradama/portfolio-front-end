@@ -1,11 +1,12 @@
 <script setup lang="ts">
 const headingId = "projects-title"
 
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
 import { useContent } from '@/composables/useContent'
 
 const { projects } = useContent()
+const visibleProjects = computed(() => projects.value.filter((project) => project.featured !== false))
 
 const track = ref<HTMLElement | null>(null)
 const currentPos = ref(0)
@@ -44,7 +45,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
     <div class="relative w-full">
       <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">
         <div class="shrink-0 w-px"></div>
-        <article v-for="project in projects" :key="project.id" class="neo-card p-6 w-65 sm:w-[320px] md:w-87.5 flex flex-col shrink-0 min-h-62.5 sm:min-h-70">
+        <article v-for="project in visibleProjects" :key="project.id" class="neo-card p-6 w-65 sm:w-[320px] md:w-87.5 flex flex-col shrink-0 min-h-62.5 sm:min-h-70">
           <div class="font-mono text-xs text-pink mb-2 uppercase tracking-tighter">0{{ project.id }} // Projet</div>
           <h3 class="font-heading text-xl sm:text-2xl font-bold mb-3">{{ project.title }}</h3>
           <p class="text-xs sm:text-sm text-muted leading-relaxed mb-6 line-clamp-3">{{ project.shortDesc }}</p>

@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import SectionHeader from "@/components/SectionHeader.vue";
-import { useContent } from "@/composables/useContent";
+import { computed } from 'vue'
+import SectionHeader from './SectionHeader.vue'
+import { useContent } from '@/composables/useContent'
+
+const props = withDefaults(defineProps<{ location?: 'home' | 'projects' }>(), { location: 'home' })
 
 const { vitrines } = useContent()
 const headingId = 'realisations-concepts-title'
+const visibleVitrines = computed(() =>
+  vitrines.value.filter((vitrine) =>
+    props.location === 'home' ? vitrine.featured !== false : vitrine.showOnProjects !== false,
+  ),
+)
 </script>
 
 <template>
   <section class="mb-12" :aria-labelledby="headingId">
     <SectionHeader :section-name="'Realisations & Concepts'" :heading-id="headingId"></SectionHeader>
     <div class="grid grid-cols-1 gap-12 sm:gap-20">
-
-
-      <article v-for="vitrine in vitrines" :key="vitrine.id" :class="[vitrine.id % 2 !== 0 ? 'md:flex-row' : 'md:flex-row-reverse', 'flex flex-col gap-0 group']">
+      <article v-for="vitrine in visibleVitrines" :key="vitrine.id" :class="[vitrine.id % 2 !== 0 ? 'md:flex-row' : 'md:flex-row-reverse', 'flex flex-col gap-0 group']">
 
         <div class="relative md:hidden rounded-lg overflow-hidden border border-(--border)">
           <img :src="vitrine.img" :alt="'Aperçu du projet ' + vitrine.title" class="w-full h-64 object-cover">

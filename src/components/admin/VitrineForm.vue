@@ -23,6 +23,8 @@ const form = reactive({
   linkText: '',
   sortOrder: 0,
   published: true,
+  featured: true,
+  showOnProjects: true,
 })
 
 function fill(vitrine: ApiVitrine | null) {
@@ -33,6 +35,8 @@ function fill(vitrine: ApiVitrine | null) {
   form.linkText = vitrine?.linkText ?? ''
   form.sortOrder = vitrine?.sortOrder ?? 0
   form.published = vitrine?.published ?? true
+  form.featured = vitrine?.featured ?? true
+  form.showOnProjects = vitrine?.showOnProjects ?? true
 }
 
 watch(() => props.vitrine, fill, { immediate: true })
@@ -46,6 +50,8 @@ function submit() {
     linkText: form.linkText.trim(),
     sortOrder: Number(form.sortOrder) || 0,
     published: form.published,
+    featured: form.featured,
+    showOnProjects: form.showOnProjects,
   })
 }
 </script>
@@ -88,6 +94,17 @@ function submit() {
       <input v-model="form.published" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
       Visible sur le site public
     </label>
+
+    <div class="flex flex-wrap gap-5">
+      <label class="flex items-center gap-3 text-sm text-muted">
+        <input v-model="form.featured" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+        Afficher sur l'accueil
+      </label>
+      <label class="flex items-center gap-3 text-sm text-muted">
+        <input v-model="form.showOnProjects" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+        Afficher sur la page Projets
+      </label>
+    </div>
 
     <p v-if="error" class="text-sm text-red-400" role="alert">{{ error }}</p>
 

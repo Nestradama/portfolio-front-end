@@ -8,6 +8,9 @@ export interface ApiProject {
   context: string
   shortDescription: string
   description: string
+  tags: string[]
+  displayMode: 'card' | 'detailed'
+  detailImage: string | null
   stack: string[]
   detailedStack: string[]
   reasons: string[]
@@ -16,6 +19,8 @@ export interface ApiProject {
   image: string | null
   sortOrder: number
   published: boolean
+  featured: boolean
+  showOnProjects: boolean
 }
 
 export interface ApiVitrine {
@@ -27,6 +32,8 @@ export interface ApiVitrine {
   linkText: string
   sortOrder: number
   published: boolean
+  featured: boolean
+  showOnProjects: boolean
 }
 
 export interface ContentPayload {
@@ -44,11 +51,17 @@ function mapProject(project: ApiProject): Project {
     context: project.context,
     shortDesc: project.shortDescription,
     desc: project.description,
+    tags: project.tags,
+    displayMode: project.displayMode,
+    detailImage: project.detailImage,
     stack: project.stack,
     detailedStack: project.detailedStack,
     reasons: project.reasons,
     link: project.link,
     linkText: project.linkText,
+    image: project.image,
+    featured: project.featured,
+    showOnProjects: project.showOnProjects,
   }
 }
 
@@ -60,6 +73,8 @@ function mapVitrine(vitrine: ApiVitrine): Vitrine {
     img: vitrine.image ?? '',
     link: vitrine.link,
     linkText: vitrine.linkText,
+    featured: vitrine.featured,
+    showOnProjects: vitrine.showOnProjects,
   }
 }
 

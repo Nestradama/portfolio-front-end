@@ -5,6 +5,8 @@ export interface Vitrine {
     img: string
     link: string | null
     linkText: string
+    featured?: boolean
+    showOnProjects?: boolean
 }
 
 export const vitrines: Vitrine[] = [

@@ -4,11 +4,17 @@ export interface Project {
     context: string
     shortDesc: string
     desc: string
+    tags?: string[]
+    displayMode?: 'card' | 'detailed'
+    detailImage?: string | null
     stack: string[]
     detailedStack: string[]
     reasons: string[]
     link: string | null
     linkText: string
+    image?: string | null
+    featured?: boolean
+    showOnProjects?: boolean
 }
 
 export const projects: Project[] = [
