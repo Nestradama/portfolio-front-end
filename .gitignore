@@ -41,6 +41,7 @@ __screenshots__/
 
 # Local documentation and scripts
 *.md
+!README.md
 readmes/
 github-remake.sh
 _backup_*
