@@ -2,12 +2,14 @@
 import { reactive, watch } from 'vue'
 import type { ApiProject } from '@/api/content'
 import type { ProjectPayload } from './types'
+import ImageField from './ImageField.vue'
 import { adminButton, adminGhostButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
   project: ApiProject | null
   busy: boolean
   error: string
+  csrf: string
   tagSuggestions?: string[]
 }>()
 
@@ -135,10 +137,7 @@ function submit() {
       </div>
     </div>
 
-    <div>
-      <label for="project-detail-image" :class="adminLabel">Image détaillée</label>
-      <input id="project-detail-image" v-model="form.detailImage" placeholder="/assets/... ou /api/media/..." :class="adminInput">
-    </div>
+    <ImageField v-model="form.detailImage" :csrf="csrf" label="Image détaillée" />
 
     <div class="grid gap-4 md:grid-cols-2">
       <div>
@@ -168,10 +167,7 @@ function submit() {
     </div>
 
     <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label for="project-image" :class="adminLabel">Image</label>
-        <input id="project-image" v-model="form.image" placeholder="/assets/..." :class="adminInput">
-      </div>
+      <ImageField v-model="form.image" :csrf="csrf" label="Image" />
       <div>
         <label for="project-order" :class="adminLabel">Ordre</label>
         <input id="project-order" v-model.number="form.sortOrder" type="number" min="0" :class="adminInput">

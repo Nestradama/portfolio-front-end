@@ -126,6 +126,39 @@ export const adminApi = {
 
   content: () => request<AdminContent>('/admin/content'),
 
+  upload: async (file: File, csrf: string) => {
+    const body = new FormData()
+    body.append('file', file)
+
+    const response = await fetch('/api/admin/upload', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': csrf,
+      },
+      body,
+      credentials: 'same-origin',
+      cache: 'no-store',
+    })
+
+    const payload = (await response.json().catch(() => null)) as
+      | { url: string; name: string; mime: string; size: number }
+      | { error?: { code?: string; message?: string; field?: string } }
+      | null
+
+    if (!response.ok) {
+      const error = payload as { error?: { code?: string; message?: string; field?: string } } | null
+      throw new ApiError(
+        error?.error?.message ?? `Erreur HTTP ${response.status}`,
+        response.status,
+        error?.error?.code,
+        error?.error?.field,
+      )
+    }
+
+    return payload as { url: string; name: string; mime: string; size: number }
+  },
+
   updateSettings: (payload: Partial<SiteSettings>, csrf: string) =>
     request<{ ok: true; settings: SiteSettings; version: number }>('/admin/settings', {
       method: 'PUT',

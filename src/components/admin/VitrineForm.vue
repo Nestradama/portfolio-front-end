@@ -2,12 +2,14 @@
 import { reactive, watch } from 'vue'
 import type { ApiVitrine } from '@/api/content'
 import type { VitrinePayload } from './types'
+import ImageField from './ImageField.vue'
 import { adminButton, adminGhostButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
   vitrine: ApiVitrine | null
   busy: boolean
   error: string
+  csrf: string
 }>()
 
 const emit = defineEmits<{
@@ -75,10 +77,7 @@ function submit() {
     </div>
 
     <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label for="vitrine-image" :class="adminLabel">Image</label>
-        <input id="vitrine-image" v-model="form.image" placeholder="/assets/..." :class="adminInput">
-      </div>
+      <ImageField v-model="form.image" :csrf="csrf" label="Image" />
       <div>
         <label for="vitrine-link" :class="adminLabel">Lien</label>
         <input id="vitrine-link" v-model="form.link" placeholder="/ou-https" :class="adminInput">

@@ -216,6 +216,7 @@ function messageOf(failure: unknown): string {
         :project="editingProject"
         :busy="busy"
         :error="error"
+        :csrf="csrf"
         :tag-suggestions="tagSuggestions"
         @save="saveProject"
         @cancel="cancelForm"
@@ -226,6 +227,7 @@ function messageOf(failure: unknown): string {
         :vitrine="editingVitrine"
         :busy="busy"
         :error="error"
+        :csrf="csrf"
         @save="saveVitrine"
         @cancel="cancelForm"
       />
