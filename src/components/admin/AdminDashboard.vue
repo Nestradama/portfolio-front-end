@@ -8,6 +8,7 @@ import VitrineForm from './VitrineForm.vue'
 import ContentSettingsForm from './ContentSettingsForm.vue'
 import SeoForm from './SeoForm.vue'
 import VisibilityForm from './VisibilityForm.vue'
+import TagsManager from './TagsManager.vue'
 import { adminButton, adminGhostButton } from './adminStyles'
 import type { ProjectPayload, VitrinePayload } from './types'
 import type { SiteSettings } from '@/data/settings'
@@ -19,11 +20,12 @@ const { csrf, username } = defineProps<{
 
 const emit = defineEmits<{ logout: [] }>()
 
-type Tab = 'projects' | 'vitrines' | 'content' | 'seo' | 'sections'
+type Tab = 'projects' | 'vitrines' | 'content' | 'seo' | 'sections' | 'tags'
 
 const tabs: Array<{ id: Tab; label: string }> = [
   { id: 'projects', label: 'Projets' },
   { id: 'vitrines', label: 'Vitrines' },
+  { id: 'tags', label: 'Tags' },
   { id: 'content', label: 'Contenu' },
   { id: 'seo', label: 'SEO' },
   { id: 'sections', label: 'Sections' },
@@ -31,10 +33,8 @@ const tabs: Array<{ id: Tab; label: string }> = [
 
 const content = ref<AdminContent | null>(null)
 const tab = ref<Tab>('projects')
-const tagSuggestions = computed(() =>
-  [...new Set((content.value?.projects ?? []).flatMap((project) => project.tags ?? []))].sort((a, b) =>
-    a.localeCompare(b),
-  ),
+const stackOptions = computed(() =>
+  (content.value?.settings.stack.groups ?? []).map((group) => group.title),
 )
 const mode = ref<'project' | 'vitrine' | null>(null)
 const editingProject = ref<ApiProject | null>(null)
@@ -147,6 +147,42 @@ async function saveSettings(payload: Partial<SiteSettings>) {
   }
 }
 
+async function move(collection: 'projects' | 'vitrines', index: number, offset: number) {
+  const current = content.value
+  if (!current) return
+
+  const list = collection === 'projects' ? current.projects : current.vitrines
+  const target = index + offset
+  if (target < 0 || target >= list.length) return
+
+  const ids = list.map((item) => item.id)
+  const source = ids[index]
+  const destination = ids[target]
+  if (source === undefined || destination === undefined) return
+  ids[index] = destination
+  ids[target] = source
+
+  busy.value = true
+  error.value = ''
+
+  try {
+    await adminApi.reorder(collection, ids, csrf)
+    await load()
+  } catch (failure) {
+    error.value = messageOf(failure)
+  } finally {
+    busy.value = false
+  }
+}
+
+function moveProject(index: number, offset: number) {
+  return move('projects', index, offset)
+}
+
+function moveVitrine(index: number, offset: number) {
+  return move('vitrines', index, offset)
+}
+
 async function removeProject(project: ApiProject) {
   if (!window.confirm(`Supprimer « ${project.title} » ?`)) {
     return
@@ -217,7 +253,7 @@ function messageOf(failure: unknown): string {
         :busy="busy"
         :error="error"
         :csrf="csrf"
-        :tag-suggestions="tagSuggestions"
+        :available-tags="content.tags"
         @save="saveProject"
         @cancel="cancelForm"
       />
@@ -256,6 +292,14 @@ function messageOf(failure: unknown): string {
         @save="saveSettings"
       />
 
+      <TagsManager
+        v-if="tab === 'tags'"
+        :tags="content.tags"
+        :stack-options="stackOptions"
+        :csrf="csrf"
+        @changed="load"
+      />
+
       <template v-if="tab === 'projects'">
         <div class="mb-4 flex justify-end">
           <button type="button" :class="adminButton" @click="newProject">Nouveau projet</button>
@@ -272,7 +316,7 @@ function messageOf(failure: unknown): string {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="project in content.projects" :key="project.id" class="border-t border-(--border)">
+              <tr v-for="(project, index) in content.projects" :key="project.id" class="border-t border-(--border)">
                 <td class="p-3 font-medium">{{ project.title }}</td>
                 <td class="p-3 text-muted">{{ project.context }}</td>
                 <td class="p-3">
@@ -280,7 +324,13 @@ function messageOf(failure: unknown): string {
                     {{ project.published ? 'Publié' : 'Masqué' }}
                   </span>
                 </td>
-                <td class="p-3 font-mono text-xs text-muted">{{ project.sortOrder }}</td>
+                <td class="p-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs text-muted">{{ project.sortOrder }}</span>
+                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter le projet" @click="moveProject(index, -1)">↑</button>
+                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.projects.length - 1" aria-label="Descendre le projet" @click="moveProject(index, 1)">↓</button>
+                  </div>
+                </td>
                 <td class="p-3">
                   <div class="flex gap-3">
                     <button type="button" class="text-accent hover:underline" @click="editProject(project)">Modifier</button>
@@ -304,17 +354,25 @@ function messageOf(failure: unknown): string {
                 <th class="p-3">Titre</th>
                 <th class="p-3">Lien</th>
                 <th class="p-3">État</th>
+                <th class="p-3">Ordre</th>
                 <th class="p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="vitrine in content.vitrines" :key="vitrine.id" class="border-t border-(--border)">
+              <tr v-for="(vitrine, index) in content.vitrines" :key="vitrine.id" class="border-t border-(--border)">
                 <td class="p-3 font-medium">{{ vitrine.title }}</td>
                 <td class="p-3 font-mono text-xs text-muted">{{ vitrine.link ?? '—' }}</td>
                 <td class="p-3">
                   <span :class="vitrine.published ? 'text-green-400' : 'text-muted'">
                     {{ vitrine.published ? 'Publié' : 'Masqué' }}
                   </span>
+                </td>
+                <td class="p-3">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-xs text-muted">{{ vitrine.sortOrder }}</span>
+                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter la vitrine" @click="moveVitrine(index, -1)">↑</button>
+                    <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.vitrines.length - 1" aria-label="Descendre la vitrine" @click="moveVitrine(index, 1)">↓</button>
+                  </div>
                 </td>
                 <td class="p-3">
                   <div class="flex gap-3">

@@ -3,10 +3,23 @@ const headingId = "projects-title"
 
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
+import ProjectCard from './ProjectCard.vue'
+import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
 
-const { projects } = useContent()
-const visibleProjects = computed(() => projects.value.filter((project) => project.featured !== false))
+const { projects, tags: tagCatalog, settings } = useContent()
+const activeTag = ref('')
+const featuredProjects = computed(() => projects.value.filter((project) => project.featured !== false))
+const tags = computed(() =>
+  [...new Set(featuredProjects.value.flatMap((project) => project.tags ?? []))].sort((a, b) =>
+    a.localeCompare(b),
+  ),
+)
+const visibleProjects = computed(() =>
+  activeTag.value
+    ? featuredProjects.value.filter((project) => (project.tags ?? []).includes(activeTag.value))
+    : featuredProjects.value,
+)
 
 const track = ref<HTMLElement | null>(null)
 const currentPos = ref(0)
@@ -42,17 +55,12 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
       </template>
     </SectionHeader>
 
+    <TagFilters v-if="settings.sections.homeFilters && tags.length" v-model="activeTag" :tag-names="tags" :catalog="tagCatalog ?? []" />
+
     <div class="relative w-full">
       <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">
         <div class="shrink-0 w-px"></div>
-        <article v-for="project in visibleProjects" :key="project.id" class="neo-card p-6 w-65 sm:w-[320px] md:w-87.5 flex flex-col shrink-0 min-h-62.5 sm:min-h-70">
-          <div class="font-mono text-xs text-pink mb-2 uppercase tracking-tighter">0{{ project.id }} // Projet</div>
-          <h3 class="font-heading text-xl sm:text-2xl font-bold mb-3">{{ project.title }}</h3>
-          <p class="text-xs sm:text-sm text-muted leading-relaxed mb-6 line-clamp-3">{{ project.shortDesc }}</p>
-          <div class="flex flex-wrap gap-2 mt-auto">
-            <span v-for="tech in project.stack" :key="tech" class="text-xs font-mono border border-(--border) px-2 py-0.5">{{ tech }}</span>
-          </div>
-        </article>
+        <ProjectCard v-for="(project, index) in visibleProjects" :key="project.id" :project="project" :index="index" />
       </div>
     </div>
   </section>

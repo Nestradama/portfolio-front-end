@@ -1,5 +1,6 @@
 import type { Project } from '@/data/projects'
 import type { SiteSettings } from '@/data/settings'
+import type { Tag } from '@/data/tags'
 import type { Vitrine } from '@/data/vitrine'
 
 export interface ApiProject {
@@ -9,7 +10,7 @@ export interface ApiProject {
   shortDescription: string
   description: string
   tags: string[]
-  displayMode: 'card' | 'detailed'
+  displayMode: 'card' | 'detailed' | 'detailed-preview'
   detailImage: string | null
   stack: string[]
   detailedStack: string[]
@@ -42,6 +43,7 @@ export interface ContentPayload {
   settings: SiteSettings
   projects: ApiProject[]
   vitrines: ApiVitrine[]
+  tags: Tag[]
 }
 
 function mapProject(project: ApiProject): Project {
@@ -83,6 +85,7 @@ export async function fetchContent(): Promise<{
   vitrines: Vitrine[]
   settings: SiteSettings
   version: number
+  tags: Tag[]
 }> {
   const response = await fetch('/api/content', {
     headers: { Accept: 'application/json' },
@@ -100,5 +103,6 @@ export async function fetchContent(): Promise<{
     vitrines: payload.vitrines.map(mapVitrine),
     settings: payload.settings,
     version: payload.version,
+    tags: payload.tags,
   }
 }

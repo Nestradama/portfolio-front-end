@@ -23,11 +23,13 @@ const labels: Array<[keyof typeof form, string, string]> = [
   ['homeHero', 'Accueil', 'Hero / présentation'],
   ['homeProjects', 'Accueil', 'Section projets'],
   ['homeVitrines', 'Accueil', 'Section réalisations'],
+  ['homeFilters', 'Accueil', 'Filtres par tags'],
   ['aboutIntro', 'À propos', 'Introduction'],
   ['aboutStack', 'À propos', 'Stack'],
   ['aboutContact', 'À propos', 'Contact'],
   ['projectsList', 'Projets', 'Liste des projets'],
   ['projectsVitrines', 'Projets', 'Réalisations'],
+  ['projectsFilters', 'Projets', 'Filtres par tags'],
 ]
 
 function submit() {

@@ -3,6 +3,8 @@ import { reactive, watch } from 'vue'
 import type { ApiProject } from '@/api/content'
 import type { ProjectPayload } from './types'
 import ImageField from './ImageField.vue'
+import TagSelector from './TagSelector.vue'
+import type { Tag } from '@/data/tags'
 import { adminButton, adminGhostButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
@@ -10,7 +12,7 @@ const props = defineProps<{
   busy: boolean
   error: string
   csrf: string
-  tagSuggestions?: string[]
+  availableTags: Tag[]
 }>()
 
 const emit = defineEmits<{
@@ -23,8 +25,8 @@ const form = reactive({
   context: '',
   shortDescription: '',
   description: '',
-  tags: '',
-  displayMode: 'card' as 'card' | 'detailed',
+  tags: [] as string[],
+  displayMode: 'card' as 'card' | 'detailed' | 'detailed-preview',
   detailImage: '',
   stack: '',
   detailedStack: '',
@@ -43,7 +45,7 @@ function fill(project: ApiProject | null) {
   form.context = project?.context ?? ''
   form.shortDescription = project?.shortDescription ?? ''
   form.description = project?.description ?? ''
-  form.tags = project?.tags.join(', ') ?? ''
+  form.tags = [...(project?.tags ?? [])]
   form.displayMode = project?.displayMode ?? 'card'
   form.detailImage = project?.detailImage ?? ''
   form.stack = project?.stack.join(', ') ?? ''
@@ -80,7 +82,7 @@ function submit() {
     context: form.context.trim(),
     shortDescription: form.shortDescription.trim(),
     description: form.description.trim(),
-    tags: splitComma(form.tags),
+    tags: [...form.tags],
     displayMode: form.displayMode,
     detailImage: form.detailImage.trim() || null,
     stack: splitComma(form.stack),
@@ -121,18 +123,13 @@ function submit() {
     </div>
 
     <div class="grid gap-4 md:grid-cols-2">
-      <div>
-        <label for="project-tags" :class="adminLabel">Tags (virgules, autocomplétion)</label>
-        <input id="project-tags" v-model="form.tags" list="project-tag-suggestions" :class="adminInput">
-        <datalist id="project-tag-suggestions">
-          <option v-for="tag in tagSuggestions ?? []" :key="tag" :value="tag" />
-        </datalist>
-      </div>
+      <TagSelector v-model="form.tags" :tags="availableTags" label="Tags" />
       <div>
         <label for="project-display-mode" :class="adminLabel">Affichage sur la page Projets</label>
         <select id="project-display-mode" v-model="form.displayMode" :class="adminInput">
           <option value="card">Carte</option>
           <option value="detailed">Détaillé</option>
+          <option value="detailed-preview">Détaillé avec preview</option>
         </select>
       </div>
     </div>

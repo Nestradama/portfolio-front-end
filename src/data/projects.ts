@@ -5,7 +5,7 @@ export interface Project {
     shortDesc: string
     desc: string
     tags?: string[]
-    displayMode?: 'card' | 'detailed'
+    displayMode?: 'card' | 'detailed' | 'detailed-preview'
     detailImage?: string | null
     stack: string[]
     detailedStack: string[]

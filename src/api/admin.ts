@@ -1,6 +1,7 @@
 import type { ApiProject, ApiVitrine } from './content'
 
 import type { SiteSettings } from '@/data/settings'
+import type { Tag } from '@/data/tags'
 
 export interface MeResponse {
   authenticated: boolean
@@ -20,6 +21,7 @@ export interface AdminContent {
   settings: SiteSettings
   projects: ApiProject[]
   vitrines: ApiVitrine[]
+  tags: Tag[]
 }
 
 export interface ProjectPayload {
@@ -28,7 +30,7 @@ export interface ProjectPayload {
   shortDescription: string
   description: string
   tags: string[]
-  displayMode: 'card' | 'detailed'
+  displayMode: 'card' | 'detailed' | 'detailed-preview'
   detailImage: string | null
   stack: string[]
   detailedStack: string[]
@@ -171,6 +173,22 @@ export const adminApi = {
 
   updateProject: (id: number, payload: ProjectPayload, csrf: string) =>
     request<ApiProject>(`/admin/projects/${id}`, { method: 'PUT', body: payload, csrf }),
+
+  reorder: (collection: 'projects' | 'vitrines', ids: number[], csrf: string) =>
+    request<{ ok: true; version: number }>('/admin/reorder', {
+      method: 'POST',
+      body: { collection, ids },
+      csrf,
+    }),
+
+  createTag: (payload: { name: string; stack: string | null }, csrf: string) =>
+    request<Tag>('/admin/tags', { method: 'POST', body: payload, csrf }),
+
+  updateTag: (id: number, payload: { name: string; stack: string | null }, csrf: string) =>
+    request<Tag>(`/admin/tags/${id}`, { method: 'PUT', body: payload, csrf }),
+
+  deleteTag: (id: number, csrf: string) =>
+    request<{ ok: true }>(`/admin/tags/${id}`, { method: 'DELETE', csrf }),
 
   deleteProject: (id: number, csrf: string) =>
     request<{ ok: true }>(`/admin/projects/${id}`, { method: 'DELETE', csrf }),

@@ -41,11 +41,13 @@ export interface SiteSettings {
     homeHero: boolean
     homeProjects: boolean
     homeVitrines: boolean
+    homeFilters: boolean
     aboutIntro: boolean
     aboutStack: boolean
     aboutContact: boolean
     projectsList: boolean
     projectsVitrines: boolean
+    projectsFilters: boolean
   }
 }
 
@@ -106,10 +108,12 @@ export const defaultSettings: SiteSettings = {
     homeHero: true,
     homeProjects: true,
     homeVitrines: true,
+    homeFilters: true,
     aboutIntro: true,
     aboutStack: true,
     aboutContact: true,
     projectsList: true,
     projectsVitrines: true,
+    projectsFilters: true,
   },
 }

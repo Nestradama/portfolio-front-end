@@ -4,7 +4,7 @@ export interface ProjectPayload {
   shortDescription: string
   description: string
   tags: string[]
-  displayMode: 'card' | 'detailed'
+  displayMode: 'card' | 'detailed' | 'detailed-preview'
   detailImage: string | null
   stack: string[]
   detailedStack: string[]
