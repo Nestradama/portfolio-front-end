@@ -9,6 +9,7 @@ withDefaults(defineProps<{ project: Project; overlay?: boolean }>(), { overlay: 
   <a
     v-if="project.link && project.linkText.trim()"
     :href="project.link"
+    tabindex="0"
     :aria-label="`Ouvrir le lien de ${project.title}`"
     :class="overlay
       ? 'border-white/30 text-white/90 hover:border-accent hover:bg-accent hover:text-black'

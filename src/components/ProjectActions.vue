@@ -10,6 +10,7 @@ withDefaults(defineProps<{ project: Project; compact?: boolean }>(), { compact: 
     <a
       v-if="project.link && project.linkText.trim()"
       :href="project.link"
+      tabindex="0"
       :class="compact ? 'px-3 py-2' : 'px-4 py-2'"
       class="inline-flex border border-(--border) font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
     >{{ project.linkText }} <span aria-hidden="true">↗</span></a>
@@ -25,6 +26,7 @@ withDefaults(defineProps<{ project: Project; compact?: boolean }>(), { compact: 
       :href="project.github"
       target="_blank"
       rel="noreferrer"
+      tabindex="0"
       :aria-label="`Voir le code de ${project.title} sur GitHub`"
       :class="compact ? 'px-3 py-2' : 'px-4 py-2'"
       class="inline-flex border border-(--border) font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
