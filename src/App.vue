@@ -27,7 +27,41 @@ function setMeta(attribute: 'name' | 'property', key: string, content: string) {
   element.content = content
 }
 
+function iconType(url: string): string | null {
+  const path = url.split('?')[0]?.toLowerCase() ?? ''
+  if (path.endsWith('.png')) return 'image/png'
+  if (path.endsWith('.jpg') || path.endsWith('.jpeg')) return 'image/jpeg'
+  if (path.endsWith('.webp')) return 'image/webp'
+  if (path.endsWith('.gif')) return 'image/gif'
+  if (path.endsWith('.svg')) return 'image/svg+xml'
+  if (path.endsWith('.ico')) return 'image/x-icon'
+  return null
+}
+
+function applyFavicon(url: string) {
+  if (!url) return
+
+  // index.html ships a full favicon set; a custom favicon rewrites every icon link so
+  // the browser tab and the iOS shortcut both use the uploaded image.
+  const type = iconType(url)
+  const links = document.head.querySelectorAll<HTMLLinkElement>(
+    'link[rel="icon"], link[rel="apple-touch-icon"]',
+  )
+
+  links.forEach((link) => {
+    link.href = url
+    link.removeAttribute('sizes')
+    if (type) {
+      link.type = type
+    } else {
+      link.removeAttribute('type')
+    }
+  })
+}
+
 watchEffect(() => {
+  applyFavicon(settings.value.favicon ?? '')
+
   if (route.name === 'admin') {
     return
   }

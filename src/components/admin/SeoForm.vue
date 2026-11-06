@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
 import type { SiteSettings } from '@/data/settings'
+import ImageField from './ImageField.vue'
 import { adminButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
   settings: SiteSettings
   busy: boolean
   error: string
+  csrf: string
 }>()
 
 const emit = defineEmits<{ save: [payload: Partial<SiteSettings>] }>()
@@ -60,10 +62,10 @@ function submit() {
         <label for="seo-site-name" :class="adminLabel">Nom du site</label>
         <input id="seo-site-name" v-model="form.siteName" :class="adminInput">
       </div>
-      <div>
-        <label for="seo-default-image" :class="adminLabel">Image OG par défaut</label>
-        <input id="seo-default-image" v-model="form.defaultImage" :class="adminInput">
-      </div>
+    </div>
+
+    <div class="mt-4">
+      <ImageField v-model="form.defaultImage" :csrf="csrf" label="Image OG par défaut" />
     </div>
 
     <section v-for="page in [

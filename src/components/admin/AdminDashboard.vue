@@ -306,6 +306,7 @@ function messageOf(failure: unknown): string {
         :settings="content.settings"
         :busy="busy"
         :error="error"
+        :csrf="csrf"
         @save="saveSettings"
       />
 
@@ -314,6 +315,7 @@ function messageOf(failure: unknown): string {
         :settings="content.settings"
         :busy="busy"
         :error="error"
+        :csrf="csrf"
         @save="saveSettings"
       />
 

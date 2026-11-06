@@ -2,19 +2,22 @@
 import { reactive, watch } from 'vue'
 import type { SiteSettings, StackGroup } from '@/data/settings'
 import StackEditor from './StackEditor.vue'
+import ImageField from './ImageField.vue'
 import { adminButton, adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
   settings: SiteSettings
   busy: boolean
   error: string
+  csrf: string
 }>()
 
 const emit = defineEmits<{ save: [payload: Partial<SiteSettings>] }>()
 
 const form = reactive({
-  homeHeading: '',
-  homeName: '',
+  logo: '',
+  favicon: '',
+  homeTitle: '',
   homeParagraphs: '',
   homePhoto: '',
   aboutHeading: '',
@@ -27,8 +30,10 @@ const form = reactive({
 })
 
 function fill(settings: SiteSettings) {
-  form.homeHeading = settings.home.heading
-  form.homeName = settings.home.name
+  form.logo = settings.logo ?? ''
+  form.favicon = settings.favicon ?? ''
+  // Older content stored the name in a separate field; fold it into the single title.
+  form.homeTitle = [settings.home.heading, settings.home.name].filter(Boolean).join(' ')
   form.homeParagraphs = settings.home.paragraphs.join('\n\n')
   form.homePhoto = settings.home.photo
   form.aboutHeading = settings.about.heading
@@ -54,9 +59,12 @@ function paragraphs(value: string): string[] {
 
 function submit() {
   emit('save', {
+    logo: form.logo.trim(),
+    favicon: form.favicon.trim(),
     home: {
-      heading: form.homeHeading.trim(),
-      name: form.homeName.trim(),
+      heading: form.homeTitle.trim(),
+      // New content keeps the whole line in `heading`; `name` stays for legacy data.
+      name: '',
       paragraphs: paragraphs(form.homeParagraphs),
       photo: form.homePhoto.trim(),
     },
@@ -78,16 +86,26 @@ function submit() {
 <template>
   <form class="space-y-8" @submit.prevent="submit">
     <section class="border border-(--border) p-6">
-      <h2 class="font-heading text-xl font-bold">Accueil</h2>
+      <h2 class="font-heading text-xl font-bold">Identité</h2>
+      <p class="mt-1 text-xs text-muted">Logo affiché dans l’en-tête et icône du site (favicon) affichée dans l’onglet du navigateur.</p>
       <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <div>
-          <label for="home-heading" :class="adminLabel">Titre</label>
-          <input id="home-heading" v-model="form.homeHeading" :class="adminInput">
-        </div>
-        <div>
-          <label for="home-name" :class="adminLabel">Nom</label>
-          <input id="home-name" v-model="form.homeName" :class="adminInput">
-        </div>
+        <ImageField v-model="form.logo" :csrf="csrf" label="Logo de l’en-tête" />
+        <ImageField v-model="form.favicon" :csrf="csrf" label="Logo du site (favicon)" />
+      </div>
+      <p class="mt-2 text-xs text-muted">Laisse un champ vide pour conserver le rendu par défaut.</p>
+    </section>
+
+    <section class="border border-(--border) p-6">
+      <h2 class="font-heading text-xl font-bold">Accueil</h2>
+      <div class="mt-4">
+        <label for="home-title" :class="adminLabel">Titre affiché</label>
+        <input
+          id="home-title"
+          v-model="form.homeTitle"
+          :class="adminInput"
+          placeholder="Salut, moi c'est Corentin."
+        >
+        <p class="mt-1 text-xs text-muted">Titre complet affiché sur une seule ligne en haut de l’accueil.</p>
       </div>
       <div class="mt-4">
         <label for="home-paragraphs" :class="adminLabel">Paragraphes (une ligne vide entre chaque)</label>
@@ -95,8 +113,7 @@ function submit() {
         <p class="mt-1 text-xs text-muted">Liens acceptés : <code>[texte](https://…)</code>, <code>[texte](mailto:…)</code> ou <code>[texte](/#contact)</code>.</p>
       </div>
       <div class="mt-4">
-        <label for="home-photo" :class="adminLabel">Photo</label>
-        <input id="home-photo" v-model="form.homePhoto" :class="adminInput">
+        <ImageField v-model="form.homePhoto" :csrf="csrf" label="Photo d’accueil" />
       </div>
     </section>
 
@@ -112,8 +129,7 @@ function submit() {
         <p class="mt-1 text-xs text-muted">Liens acceptés : <code>[texte](https://…)</code> ou <code>[texte](mailto:…)</code>.</p>
       </div>
       <div class="mt-4">
-        <label for="about-photo" :class="adminLabel">Photo</label>
-        <input id="about-photo" v-model="form.aboutPhoto" :class="adminInput">
+        <ImageField v-model="form.aboutPhoto" :csrf="csrf" label="Photo À propos" />
       </div>
     </section>
 

@@ -9,6 +9,8 @@ export interface PageSeo {
 }
 
 export interface SiteSettings {
+  logo: string
+  favicon: string
   home: {
     heading: string
     name: string
@@ -52,9 +54,11 @@ export interface SiteSettings {
 }
 
 export const defaultSettings: SiteSettings = {
+  logo: '',
+  favicon: '',
   home: {
-    heading: "Salut, moi c'est",
-    name: 'Corentin.',
+    heading: "Salut, moi c'est Corentin.",
+    name: '',
     paragraphs: [
       "Back-end de préférence, et pas mal de projets perso parce que c'est comme ça que j'apprends. Autodidacte, en formation webdev (OpenClassrooms), je vise une alternance Java.",
       "Si vous avez des projets qui ont besoin de solutions, n'hésitez pas à [me contacter](mailto:roquin.corentin@protonmail.com).",
