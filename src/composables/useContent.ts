@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 import { fetchContent } from '@/api/content'
-import { projects as fallbackProjects, type Project } from '@/data/projects'
+import type { Project } from '@/data/projects'
 import { defaultSettings, type SiteSettings } from '@/data/settings'
 import type { Tag } from '@/data/tags'
-import { vitrines as fallbackVitrines, type Vitrine } from '@/data/vitrine'
+import type { Vitrine } from '@/data/vitrine'
 
-const projects = ref<Project[]>(fallbackProjects)
-const vitrines = ref<Vitrine[]>(fallbackVitrines)
+const projects = ref<Project[]>([])
+const vitrines = ref<Vitrine[]>([])
 const settings = ref<SiteSettings>(defaultSettings)
 const tags = ref<Tag[]>([])
 const version = ref(0)

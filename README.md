@@ -51,12 +51,12 @@ src/
 ├── api/          appels HTTP et types de contenu
 ├── components/   composants publics et admin
 ├── composables/  état partagé, notamment useContent()
-├── data/         valeurs de secours locales
+├── data/         types de contenu
 ├── router/       routes et métadonnées SEO
 └── views/        pages publiques et admin
 ```
 
-Le contenu est chargé depuis `/api/content`. Si l’API est indisponible, les données locales de `src/data` servent de fallback pour que le site reste consultable.
+Le contenu est chargé depuis `/api/content`. Si l’API est indisponible, un message d’erreur s’affiche ; aucun contenu de secours n’est embarqué.
 
 ## Déploiement
 

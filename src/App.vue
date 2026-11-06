@@ -14,7 +14,7 @@ const openLegal = () => (legalOpen.value = true)
 const openPrivacy = () => (privacyOpen.value = true)
 
 const route = useRoute()
-const { load, settings } = useContent()
+const { load, settings, loading, error } = useContent()
 onMounted(load)
 
 function setMeta(attribute: 'name' | 'property', key: string, content: string) {
@@ -82,6 +82,13 @@ watchEffect(() => {
   <SiteHeader />
 
   <main id="contenu" tabindex="-1" class="grow w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16 outline-none">
+    <p v-if="route.name !== 'admin' && loading" role="status" class="mb-6 font-mono text-xs uppercase tracking-widest text-muted">
+      Chargement du contenu…
+    </p>
+    <p v-else-if="route.name !== 'admin' && error" role="alert" class="mb-6 font-mono text-xs uppercase tracking-widest text-muted">
+      Le contenu est temporairement indisponible.
+    </p>
+
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
         <component :is="Component" :key="route.fullPath" @open-privacy="openPrivacy()" />
