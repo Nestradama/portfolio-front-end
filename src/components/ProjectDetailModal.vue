@@ -1,28 +1,63 @@
 <script setup lang="ts">
+import { computed, nextTick, ref, watch } from 'vue'
 import type { Project } from '@/data/projects'
+import ProjectActions from './ProjectActions.vue'
+import ProjectLinkArrow from './ProjectLinkArrow.vue'
 import ModalShell from './modals/ModalShell.vue'
 
-defineProps<{ project: Project | null }>()
+const props = defineProps<{ project: Project | null }>()
 const emit = defineEmits<{ close: [] }>()
+
+const zoomOpen = ref(false)
+const zoomLayer = ref<HTMLElement | null>(null)
+const zoomTrigger = ref<HTMLElement | null>(null)
+const imageUrl = computed(() => props.project?.detailImage || props.project?.image || '')
+
+watch(zoomOpen, async (open) => {
+  if (!open) {
+    // Return focus to the thumbnail so keyboard users keep their place.
+    zoomTrigger.value?.focus()
+    return
+  }
+
+  await nextTick()
+  zoomLayer.value?.focus()
+})
+
+watch(
+  () => props.project,
+  () => {
+    zoomOpen.value = false
+  },
+)
 </script>
 
 <template>
-  <ModalShell :open="project !== null" :title="project?.title ?? ''" wide @close="emit('close')">
+  <ModalShell :open="project !== null" :title="project?.title ?? ''" wide hide-title @close="emit('close')">
     <div v-if="project" class="space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-muted">
-        <span>{{ project.context }}</span>
-        <span v-if="project.tags?.length">{{ project.tags.join(' · ') }}</span>
+      <div class="space-y-3">
+        <div class="pr-10 font-mono text-[10px] uppercase tracking-widest text-muted">{{ project.context }}</div>
+
+        <!-- The title and gradient ignore pointer events so the whole banner stays clickable;
+             the arrow opts back in because it is a real link. -->
+        <div v-if="imageUrl" class="relative overflow-hidden border border-(--border)">
+          <button ref="zoomTrigger" type="button" class="block w-full" aria-label="Agrandir l’aperçu" @click="zoomOpen = true">
+            <img :src="imageUrl" alt="" class="h-40 w-full object-cover sm:h-48">
+          </button>
+          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--card)] via-black/40 to-transparent"></div>
+          <div class="pointer-events-none absolute inset-x-4 bottom-3 flex flex-wrap items-center gap-3">
+            <h2 class="font-heading text-2xl font-bold sm:text-3xl">{{ project.title }}</h2>
+            <ProjectLinkArrow :project="project" overlay class="pointer-events-auto" />
+          </div>
+        </div>
+
+        <div v-else class="flex flex-wrap items-center gap-3">
+          <h2 class="font-heading text-2xl font-bold">{{ project.title }}</h2>
+          <ProjectLinkArrow :project="project" />
+        </div>
       </div>
 
       <p class="text-sm leading-relaxed text-muted sm:text-base">{{ project.desc }}</p>
-
-      <img
-        v-if="project.detailImage || project.image"
-        :src="(project.detailImage || project.image) ?? ''"
-        :alt="`Aperçu de ${project.title}`"
-        class="aspect-video w-full border border-(--border) object-cover"
-        loading="lazy"
-      >
 
       <div class="grid gap-6 sm:grid-cols-2">
         <div v-if="project.reasons.length">
@@ -51,15 +86,31 @@ const emit = defineEmits<{ close: [] }>()
         </div>
       </div>
 
-      <a
-        v-if="project.link"
-        :href="project.link"
-        class="inline-flex border border-(--border) px-4 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
-      >{{ project.linkText || 'Voir le projet' }} ↗</a>
-      <span
-        v-else-if="project.linkText"
-        class="inline-flex border border-(--border) px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-muted/60"
-      >{{ project.linkText }}</span>
+      <ProjectActions :project="project" />
     </div>
   </ModalShell>
+
+  <!-- Escape is handled here with `.stop` so ModalShell's window listener does not also close
+       the project modal while the user is only dismissing the image preview. -->
+  <Teleport to="body">
+    <div
+      v-if="zoomOpen && project"
+      ref="zoomLayer"
+      tabindex="-1"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="`Aperçu de ${project.title}`"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-4 outline-none"
+      @click.self="zoomOpen = false"
+      @keydown.esc.stop="zoomOpen = false"
+    >
+      <button
+        type="button"
+        class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center border border-white/20 text-lg text-white/80 transition-colors hover:border-accent hover:text-accent"
+        aria-label="Fermer l’aperçu"
+        @click="zoomOpen = false"
+      >✕</button>
+      <img :src="imageUrl" :alt="`Aperçu de ${project.title}`" class="max-h-[85vh] max-w-full object-contain">
+    </div>
+  </Teleport>
 </template>

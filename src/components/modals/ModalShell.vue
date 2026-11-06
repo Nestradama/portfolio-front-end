@@ -2,7 +2,7 @@
 import {onMounted, onBeforeUnmount, watch} from "vue";
 
 const props = withDefaults(defineProps<
-    { title: string; open: boolean; wide?: boolean }>(), { wide: false })
+    { title: string; open: boolean; wide?: boolean; hideTitle?: boolean }>(), { wide: false, hideTitle: false })
 const emit = defineEmits<{ close: [] }>()
 
 function onKeydown(e: KeyboardEvent) {
@@ -17,6 +17,8 @@ onBeforeUnmount(() => {
 
 
 watch(() => props.open, (open) => {
+  // The modal owns the page scroll while it is open; restore it on unmount too in case
+  // the parent removes the component without toggling `open`.
   document.body.style.overflow = open ? 'hidden' : ''
 })
 </script>
@@ -35,7 +37,8 @@ watch(() => props.open, (open) => {
           <path d="M18 6 6 18M6 6l12 12"/>
         </svg>
       </button>
-      <h2 class="font-heading text-2xl font-bold mb-6">{{ title }}</h2>
+      <!-- The project detail modal draws its own title over the header image. -->
+      <h2 v-if="!hideTitle" class="mb-6 font-heading text-2xl font-bold">{{ title }}</h2>
       <div class="space-y-4 text-sm text-muted">
         <slot></slot>
       </div>
