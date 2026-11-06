@@ -1,4 +1,5 @@
 import type { ApiProject, ApiVitrine } from './content'
+import type { ProjectPayload, VitrinePayload } from './payloads'
 
 import type { SiteSettings } from '@/data/settings'
 import type { Tag } from '@/data/tags'
@@ -31,41 +32,6 @@ export interface AuditEntry {
   target: string | null
   ip: string | null
   createdAt: string
-}
-
-export interface ProjectPayload {
-  title: string
-  context: string
-  shortDescription: string
-  description: string
-  tags: string[]
-  displayMode: 'card' | 'detailed' | 'detailed-preview'
-  detailImage: string | null
-  stack: string[]
-  detailedStack: string[]
-  reasons: string[]
-  link: string | null
-  linkText: string
-  image: string | null
-  github: string | null
-  sortOrder: number
-  published: boolean
-  featured: boolean
-  showOnProjects: boolean
-  showDetail: boolean
-  showGithub: boolean
-}
-
-export interface VitrinePayload {
-  title: string
-  description: string
-  image: string | null
-  link: string | null
-  linkText: string
-  sortOrder: number
-  published: boolean
-  featured: boolean
-  showOnProjects: boolean
 }
 
 export class ApiError extends Error {
