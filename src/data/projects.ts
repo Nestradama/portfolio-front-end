@@ -13,9 +13,11 @@ export interface Project {
     link: string | null
     linkText: string
     image?: string | null
+    github?: string | null
     featured?: boolean
     showOnProjects?: boolean
     showDetail?: boolean
+    showGithub?: boolean
 }
 
 export const projects: Project[] = [

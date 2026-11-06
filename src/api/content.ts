@@ -18,11 +18,13 @@ export interface ApiProject {
   link: string | null
   linkText: string
   image: string | null
+  github: string | null
   sortOrder: number
   published: boolean
   featured: boolean
   showOnProjects: boolean
   showDetail: boolean
+  showGithub: boolean
 }
 
 export interface ApiVitrine {
@@ -63,9 +65,11 @@ function mapProject(project: ApiProject): Project {
     link: project.link,
     linkText: project.linkText,
     image: project.image,
+    github: project.github,
     featured: project.featured,
     showOnProjects: project.showOnProjects,
     showDetail: project.showDetail,
+    showGithub: project.showGithub,
   }
 }
 

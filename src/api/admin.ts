@@ -47,11 +47,13 @@ export interface ProjectPayload {
   link: string | null
   linkText: string
   image: string | null
+  github: string | null
   sortOrder: number
   published: boolean
   featured: boolean
   showOnProjects: boolean
   showDetail: boolean
+  showGithub: boolean
 }
 
 export interface VitrinePayload {

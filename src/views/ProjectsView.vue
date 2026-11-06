@@ -2,7 +2,9 @@
 import { computed, ref } from 'vue'
 import { useContent } from '@/composables/useContent'
 import ProjectCard from '@/components/ProjectCard.vue'
+import ProjectActions from '@/components/ProjectActions.vue'
 import ProjectDetailModal from '@/components/ProjectDetailModal.vue'
+import ProjectLinkArrow from '@/components/ProjectLinkArrow.vue'
 import TagFilters from '@/components/TagFilters.vue'
 import VitrineSection from '@/components/VitrineSection.vue'
 import type { Project } from '@/data/projects'
@@ -97,7 +99,10 @@ const groups = computed<ProjectGroup[]>(() => {
                     <span>0{{ group.start + index + 1 }}</span>
                   </div>
 
-                  <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">{{ project.title }}</h2>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">{{ project.title }}</h2>
+                    <ProjectLinkArrow :project="project" />
+                  </div>
                   <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">{{ project.desc }}</p>
 
                   <div class="mt-5 border-t border-(--border) pt-4">
@@ -135,15 +140,7 @@ const groups = computed<ProjectGroup[]>(() => {
                     </div>
                   </div>
 
-                  <a
-                    v-if="project.link !== null"
-                    :href="project.link"
-                    class="mt-auto inline-flex w-fit border border-(--border) px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
-                  >{{ project.linkText }} ↗</a>
-                  <span
-                    v-else
-                    class="mt-auto inline-flex w-fit border border-(--border) px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-muted/60"
-                  >{{ project.linkText }}</span>
+                  <ProjectActions :project="project" compact class="mt-auto" />
                 </aside>
               </div>
             </article>
@@ -160,7 +157,10 @@ const groups = computed<ProjectGroup[]>(() => {
               <span>0{{ group.start + index + 1 }}</span>
             </div>
 
-            <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">{{ project.title }}</h2>
+            <div class="flex flex-wrap items-center gap-3">
+              <h2 class="font-heading text-2xl font-bold tracking-tight sm:text-3xl">{{ project.title }}</h2>
+              <ProjectLinkArrow :project="project" />
+            </div>
             <p class="mt-4 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">{{ project.desc }}</p>
 
             <div class="mt-8 grid gap-8 border-t border-(--border) pt-8 md:grid-cols-[1.1fr_0.9fr]">
@@ -188,15 +188,7 @@ const groups = computed<ProjectGroup[]>(() => {
                   >{{ tech }}</span>
                 </div>
 
-                <a
-                  v-if="project.link !== null"
-                  :href="project.link"
-                  class="mt-6 inline-flex border border-(--border) px-4 py-2 font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
-                >{{ project.linkText }} ↗</a>
-                <span
-                  v-else
-                  class="mt-6 inline-flex border border-(--border) px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-muted/60"
-                >{{ project.linkText }}</span>
+                <ProjectActions :project="project" class="mt-6" />
               </div>
             </div>
           </article>

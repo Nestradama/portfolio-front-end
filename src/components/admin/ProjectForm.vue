@@ -47,11 +47,13 @@ const form = reactive({
   link: '',
   linkText: '',
   image: '',
+  github: '',
   sortOrder: 0,
   published: true,
   featured: true,
   showOnProjects: true,
   showDetail: true,
+  showGithub: true,
 })
 
 function fill(project: ApiProject | null) {
@@ -68,11 +70,13 @@ function fill(project: ApiProject | null) {
   form.link = project?.link ?? ''
   form.linkText = project?.linkText ?? ''
   form.image = project?.image ?? ''
+  form.github = project?.github ?? ''
   form.sortOrder = project?.sortOrder ?? 0
   form.published = project?.published ?? true
   form.featured = project?.featured ?? true
   form.showOnProjects = project?.showOnProjects ?? true
   form.showDetail = project?.showDetail ?? true
+  form.showGithub = project?.showGithub ?? true
 }
 
 watch(() => props.project, fill, { immediate: true })
@@ -92,11 +96,13 @@ function submit() {
     link: form.link.trim() || null,
     linkText: form.linkText.trim(),
     image: form.image.trim() || null,
+    github: form.github.trim() || null,
     sortOrder: Number(form.sortOrder) || 0,
     published: form.published,
     featured: form.featured,
     showOnProjects: form.showOnProjects,
     showDetail: form.showDetail,
+    showGithub: form.showGithub,
   })
 }
 </script>
@@ -222,6 +228,11 @@ function submit() {
               <input id="project-link-text" v-model="form.linkText" :class="adminInput">
             </div>
           </div>
+          <div class="mt-4">
+            <label for="project-github" :class="adminLabel">Lien GitHub</label>
+            <input id="project-github" v-model="form.github" placeholder="https://github.com/…" :class="adminInput">
+            <p class="mt-1 text-xs text-muted">Affiché uniquement sur les projets détaillés et dans la vue « + ».</p>
+          </div>
         </details>
       </div>
 
@@ -252,6 +263,10 @@ function submit() {
             <label class="flex items-center gap-3">
               <input v-model="form.showDetail" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
               Afficher le bouton « + » (détail du projet)
+            </label>
+            <label class="flex items-center gap-3">
+              <input v-model="form.showGithub" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+              Afficher le bouton GitHub
             </label>
           </div>
         </details>
