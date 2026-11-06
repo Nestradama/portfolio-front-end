@@ -3,6 +3,8 @@ import { computed, nextTick, ref, watch } from 'vue'
 import type { Project } from '@/data/projects'
 import ProjectActions from './ProjectActions.vue'
 import ProjectLinkArrow from './ProjectLinkArrow.vue'
+import ProjectReasons from './ProjectReasons.vue'
+import ProjectStack from './ProjectStack.vue'
 import ModalShell from './modals/ModalShell.vue'
 
 const props = defineProps<{ project: Project | null }>()
@@ -12,6 +14,9 @@ const zoomOpen = ref(false)
 const zoomLayer = ref<HTMLElement | null>(null)
 const zoomTrigger = ref<HTMLElement | null>(null)
 const imageUrl = computed(() => props.project?.detailImage || props.project?.image || '')
+const stack = computed(() =>
+  props.project?.detailedStack.length ? props.project.detailedStack : props.project?.stack ?? [],
+)
 
 function trapLightboxFocus(event: KeyboardEvent) {
   const close = zoomLayer.value?.querySelector<HTMLElement>('button')
@@ -70,27 +75,12 @@ watch(
       <div class="grid gap-6 sm:grid-cols-2">
         <div v-if="project.reasons.length">
           <h3 class="mb-3 font-mono text-[10px] uppercase tracking-widest text-accent">Pourquoi ce projet</h3>
-          <ul class="space-y-2">
-            <li
-              v-for="reason in project.reasons"
-              :key="reason"
-              class="flex gap-2 text-sm leading-relaxed text-muted"
-            >
-              <span class="mt-0.5 text-pink" aria-hidden="true">↳</span>
-              <span>{{ reason }}</span>
-            </li>
-          </ul>
+          <ProjectReasons :reasons="project.reasons" variant="compact" />
         </div>
 
-        <div v-if="(project.detailedStack.length ? project.detailedStack : project.stack).length">
+        <div v-if="stack.length">
           <h3 class="mb-3 font-mono text-[10px] uppercase tracking-widest text-accent">Stack</h3>
-          <div class="flex flex-wrap gap-1.5">
-            <span
-              v-for="tech in (project.detailedStack.length ? project.detailedStack : project.stack)"
-              :key="tech"
-              class="border border-(--border) px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted"
-            >{{ tech }}</span>
-          </div>
+          <ProjectStack :items="stack" variant="compact" />
         </div>
       </div>
 
