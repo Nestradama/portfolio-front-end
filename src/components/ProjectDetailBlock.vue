@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from '@/data/projects'
+import { projectStack, type Project } from '@/data/projects'
 import ProjectActions from './ProjectActions.vue'
 import ProjectLinkArrow from './ProjectLinkArrow.vue'
 import ProjectReasons from './ProjectReasons.vue'
@@ -40,7 +40,7 @@ defineProps<{ project: Project; index: number; preview: boolean }>()
 
         <div>
           <h3 class="mb-2 font-mono text-[10px] uppercase tracking-widest text-accent">Stack</h3>
-          <ProjectStack :items="project.detailedStack" variant="compact" />
+          <ProjectStack :items="projectStack(project)" variant="compact" />
         </div>
 
         <ProjectActions :project="project" compact class="mt-auto" />
@@ -68,7 +68,7 @@ defineProps<{ project: Project; index: number; preview: boolean }>()
 
       <div>
         <h3 class="mb-4 font-mono text-[10px] uppercase tracking-widest text-accent">Stack</h3>
-        <ProjectStack :items="project.detailedStack" variant="default" />
+        <ProjectStack :items="projectStack(project)" variant="default" />
         <ProjectActions :project="project" class="mt-6" />
       </div>
     </div>

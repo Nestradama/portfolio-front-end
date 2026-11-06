@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useContent } from '@/composables/useContent'
+import { useProjectFilters } from '@/composables/useProjectFilters'
 import ProjectCard from '@/components/ProjectCard.vue'
 import ProjectDetailBlock from '@/components/ProjectDetailBlock.vue'
 import ProjectDetailModal from '@/components/ProjectDetailModal.vue'
@@ -9,21 +10,11 @@ import VitrineSection from '@/components/VitrineSection.vue'
 import type { Project } from '@/data/projects'
 
 const { projects, settings, tags: tagCatalog } = useContent()
-const activeTag = ref('')
 const selectedProject = ref<Project | null>(null)
-const visibleProjects = computed(() => projects.value.filter((project) => project.showOnProjects !== false))
-const hiddenTags = computed(
-  () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
-)
-const tags = computed(() =>
-  [...new Set(visibleProjects.value.flatMap((project) => project.tags ?? []))]
-    .filter((tag) => !hiddenTags.value.has(tag))
-    .sort((a, b) => a.localeCompare(b)),
-)
-const filteredProjects = computed(() =>
-  activeTag.value
-    ? visibleProjects.value.filter((project) => (project.tags ?? []).includes(activeTag.value))
-    : visibleProjects.value,
+const { activeTag, tags, filteredProjects } = useProjectFilters(
+  projects,
+  tagCatalog,
+  (project) => project.showOnProjects !== false,
 )
 
 type DisplayMode = NonNullable<Project['displayMode']>

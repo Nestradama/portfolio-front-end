@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
-import type { Project } from '@/data/projects'
+import { projectStack, type Project } from '@/data/projects'
 import ProjectActions from './ProjectActions.vue'
 import ProjectLinkArrow from './ProjectLinkArrow.vue'
 import ProjectReasons from './ProjectReasons.vue'
@@ -14,9 +14,7 @@ const zoomOpen = ref(false)
 const zoomLayer = ref<HTMLElement | null>(null)
 const zoomTrigger = ref<HTMLElement | null>(null)
 const imageUrl = computed(() => props.project?.detailImage || props.project?.image || '')
-const stack = computed(() =>
-  props.project?.detailedStack.length ? props.project.detailedStack : props.project?.stack ?? [],
-)
+const stack = computed(() => (props.project ? projectStack(props.project) : []))
 
 function trapLightboxFocus(event: KeyboardEvent) {
   const close = zoomLayer.value?.querySelector<HTMLElement>('button')

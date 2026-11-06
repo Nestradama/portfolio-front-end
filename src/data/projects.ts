@@ -19,3 +19,8 @@ export interface Project {
     showDetail?: boolean
     showGithub?: boolean
 }
+
+export function projectStack(project: Project): string[] {
+  return project.detailedStack.length ? project.detailedStack : project.stack
+}
+

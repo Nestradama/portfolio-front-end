@@ -1,30 +1,21 @@
 <script setup lang="ts">
 const headingId = "projects-title"
 
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
 import ProjectCard from './ProjectCard.vue'
 import ProjectDetailModal from './ProjectDetailModal.vue'
 import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
+import { useProjectFilters } from '@/composables/useProjectFilters'
 import type { Project } from '@/data/projects'
 
 const { projects, settings, tags: tagCatalog } = useContent()
-const activeTag = ref('')
 const selectedProject = ref<Project | null>(null)
-const featuredProjects = computed(() => projects.value.filter((project) => project.featured !== false))
-const hiddenTags = computed(
-  () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
-)
-const tags = computed(() =>
-  [...new Set(featuredProjects.value.flatMap((project) => project.tags ?? []))]
-    .filter((tag) => !hiddenTags.value.has(tag))
-    .sort((a, b) => a.localeCompare(b)),
-)
-const visibleProjects = computed(() =>
-  activeTag.value
-    ? featuredProjects.value.filter((project) => (project.tags ?? []).includes(activeTag.value))
-    : featuredProjects.value,
+const { activeTag, tags, filteredProjects: visibleProjects } = useProjectFilters(
+  projects,
+  tagCatalog,
+  (project) => project.featured !== false,
 )
 
 const track = ref<HTMLElement | null>(null)
