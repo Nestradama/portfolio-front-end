@@ -42,6 +42,13 @@ function reset() {
   currentPos.value = 0
 }
 
+function selectTag(value: string) {
+  activeTag.value = value
+  // A new filter replaces the rail content; start from the first card so no result
+  // stays off-screen because of the previous scroll position.
+  reset()
+}
+
 onMounted(() => window.addEventListener('resize', reset))
 onBeforeUnmount(() => window.removeEventListener('resize', reset))
 </script>
@@ -61,7 +68,12 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
       </template>
     </SectionHeader>
 
-    <TagFilters v-if="settings.sections.homeFilters && tags.length" v-model="activeTag" :tag-names="tags" />
+    <TagFilters
+      v-if="settings.sections.homeFilters && tags.length"
+      :model-value="activeTag"
+      :tag-names="tags"
+      @update:model-value="selectTag"
+    />
 
     <div class="relative w-full">
       <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">
