@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from 'vue'
 import type { AdminContent, AuditEntry } from '@/api/admin'
 import { adminApi, ApiError } from '@/api/admin'
 import type { ApiProject, ApiVitrine } from '@/api/content'
+import { useContent } from '@/composables/useContent'
 import ProjectForm from './ProjectForm.vue'
 import VitrineForm from './VitrineForm.vue'
 import ContentSettingsForm from './ContentSettingsForm.vue'
@@ -35,6 +36,7 @@ const tabs: Array<{ id: Tab; label: string }> = [
 
 const content = ref<AdminContent | null>(null)
 const tab = ref<Tab>('projects')
+const { refresh: refreshPublicContent } = useContent()
 const stackOptions = computed(() =>
   (content.value?.settings.stack.groups ?? []).map((group) => group.title),
 )
@@ -59,6 +61,8 @@ async function load() {
 
   try {
     content.value = await adminApi.content()
+    // Keep the public pages in sync so a refresh or a save is visible without F5.
+    await refreshPublicContent()
   } catch (failure) {
     if (failure instanceof ApiError && failure.status === 401) {
       emit('logout')

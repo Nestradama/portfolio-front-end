@@ -50,6 +50,13 @@ async function load(): Promise<void> {
 }
 
 async function refresh(): Promise<void> {
+  // A refresh can be requested while the initial load is still running, for example
+  // right after an admin save. Wait for it, then force a new request so the caller
+  // never receives a response that started before the change.
+  if (pending !== null) {
+    await pending.catch(() => {})
+  }
+
   loaded = false
   return load()
 }
