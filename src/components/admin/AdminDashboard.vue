@@ -40,6 +40,18 @@ const { refresh: refreshPublicContent } = useContent()
 const stackOptions = computed(() =>
   (content.value?.settings.stack.groups ?? []).map((group) => group.title),
 )
+
+function formatVersion(version: number | undefined): string {
+  if (version === undefined) return '—'
+
+  // The content version is an incrementing integer; display it as X.XX.XX in base 100.
+  const patch = version % 100
+  const minor = Math.floor(version / 100) % 100
+  const major = 1 + Math.floor(version / 10000)
+  return `${major}.${String(minor).padStart(2, '0')}.${String(patch).padStart(2, '0')}`
+}
+
+const versionLabel = computed(() => formatVersion(content.value?.version))
 const mode = ref<'project' | 'vitrine' | null>(null)
 const editingProject = ref<ApiProject | null>(null)
 const editingVitrine = ref<ApiVitrine | null>(null)
@@ -259,7 +271,7 @@ function messageOf(failure: unknown): string {
       <div>
         <p class="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">Administration</p>
         <h1 class="font-heading text-2xl font-bold">Contenu du portfolio</h1>
-        <p class="mt-1 text-sm text-muted">Connecté en tant que {{ username }} · version {{ content?.version ?? '—' }}</p>
+        <p class="mt-1 text-sm text-muted">Connecté en tant que {{ username }} · version {{ versionLabel }}</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <button type="button" :class="adminGhostButton" @click="load">Rafraîchir</button>
