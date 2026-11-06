@@ -11,6 +11,8 @@ import SeoForm from './SeoForm.vue'
 import VisibilityForm from './VisibilityForm.vue'
 import TagsManager from './TagsManager.vue'
 import AuditLog from './AuditLog.vue'
+import ProjectTable from './ProjectTable.vue'
+import VitrineTable from './VitrineTable.vue'
 import { adminButton, adminGhostButton } from './adminStyles'
 import type { ProjectPayload, VitrinePayload } from './types'
 import type { SiteSettings } from '@/data/settings'
@@ -362,86 +364,26 @@ function messageOf(failure: unknown): string {
         <div class="mb-4 flex justify-end">
           <button type="button" :class="adminButton" @click="newProject">Nouveau projet</button>
         </div>
-        <div class="overflow-x-auto border border-(--border)">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-(--card) text-xs font-semibold uppercase tracking-wide text-muted">
-              <tr>
-                <th class="p-3">Titre</th>
-                <th class="p-3">Contexte</th>
-                <th class="p-3">État</th>
-                <th class="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(project, index) in content.projects" :key="project.id" class="border-t border-(--border)">
-                <td class="p-3">
-                  <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-1">
-                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter le projet" @click="moveProject(index, -1)">↑</button>
-                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.projects.length - 1" aria-label="Descendre le projet" @click="moveProject(index, 1)">↓</button>
-                    </div>
-                    <span class="font-medium">{{ project.title }}</span>
-                  </div>
-                </td>
-                <td class="p-3 text-muted">{{ project.context }}</td>
-                <td class="p-3">
-                  <span :class="project.published ? 'text-green-400' : 'text-muted'">
-                    {{ project.published ? 'Publié' : 'Masqué' }}
-                  </span>
-                </td>
-                <td class="p-3">
-                  <div class="flex gap-3">
-                    <button type="button" class="text-accent hover:underline" @click="editProject(project)">Modifier</button>
-                    <button type="button" class="text-red-400 hover:underline" @click="removeProject(project)">Supprimer</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <ProjectTable
+          :projects="content.projects"
+          :busy="busy"
+          @edit="editProject"
+          @remove="removeProject"
+          @move="moveProject"
+        />
       </template>
 
       <template v-if="tab === 'vitrines'">
         <div class="mb-4 flex justify-end">
           <button type="button" :class="adminButton" @click="newVitrine">Nouvelle vitrine</button>
         </div>
-        <div class="overflow-x-auto border border-(--border)">
-          <table class="w-full text-left text-sm">
-            <thead class="bg-(--card) text-xs font-semibold uppercase tracking-wide text-muted">
-              <tr>
-                <th class="p-3">Titre</th>
-                <th class="p-3">Lien</th>
-                <th class="p-3">État</th>
-                <th class="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(vitrine, index) in content.vitrines" :key="vitrine.id" class="border-t border-(--border)">
-                <td class="p-3">
-                  <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-1">
-                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === 0" aria-label="Monter la vitrine" @click="moveVitrine(index, -1)">↑</button>
-                      <button type="button" class="px-1 text-accent disabled:text-muted/40" :disabled="busy || index === content.vitrines.length - 1" aria-label="Descendre la vitrine" @click="moveVitrine(index, 1)">↓</button>
-                    </div>
-                    <span class="font-medium">{{ vitrine.title }}</span>
-                  </div>
-                </td>
-                <td class="p-3 font-mono text-xs text-muted">{{ vitrine.link ?? '—' }}</td>
-                <td class="p-3">
-                  <span :class="vitrine.published ? 'text-green-400' : 'text-muted'">
-                    {{ vitrine.published ? 'Publié' : 'Masqué' }}
-                  </span>
-                </td>
-                <td class="p-3">
-                  <div class="flex gap-3">
-                    <button type="button" class="text-accent hover:underline" @click="editVitrine(vitrine)">Modifier</button>
-                    <button type="button" class="text-red-400 hover:underline" @click="removeVitrine(vitrine)">Supprimer</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <VitrineTable
+          :vitrines="content.vitrines"
+          :busy="busy"
+          @edit="editVitrine"
+          @remove="removeVitrine"
+          @move="moveVitrine"
+        />
       </template>
     </template>
   </section>
