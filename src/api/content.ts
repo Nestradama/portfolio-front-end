@@ -22,6 +22,7 @@ export interface ApiProject {
   published: boolean
   featured: boolean
   showOnProjects: boolean
+  showDetail: boolean
 }
 
 export interface ApiVitrine {
@@ -64,6 +65,7 @@ function mapProject(project: ApiProject): Project {
     image: project.image,
     featured: project.featured,
     showOnProjects: project.showOnProjects,
+    showDetail: project.showDetail,
   }
 }
 

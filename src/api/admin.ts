@@ -51,6 +51,7 @@ export interface ProjectPayload {
   published: boolean
   featured: boolean
   showOnProjects: boolean
+  showDetail: boolean
 }
 
 export interface VitrinePayload {

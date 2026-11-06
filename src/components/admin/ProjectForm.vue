@@ -51,6 +51,7 @@ const form = reactive({
   published: true,
   featured: true,
   showOnProjects: true,
+  showDetail: true,
 })
 
 function fill(project: ApiProject | null) {
@@ -71,6 +72,7 @@ function fill(project: ApiProject | null) {
   form.published = project?.published ?? true
   form.featured = project?.featured ?? true
   form.showOnProjects = project?.showOnProjects ?? true
+  form.showDetail = project?.showDetail ?? true
 }
 
 watch(() => props.project, fill, { immediate: true })
@@ -94,6 +96,7 @@ function submit() {
     published: form.published,
     featured: form.featured,
     showOnProjects: form.showOnProjects,
+    showDetail: form.showDetail,
   })
 }
 </script>
@@ -245,6 +248,10 @@ function submit() {
             <label class="flex items-center gap-3">
               <input v-model="form.showOnProjects" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
               Afficher sur la page Projets
+            </label>
+            <label class="flex items-center gap-3">
+              <input v-model="form.showDetail" type="checkbox" class="h-4 w-4 accent-[var(--accent)]">
+              Afficher le bouton « + » (détail du projet)
             </label>
           </div>
         </details>
