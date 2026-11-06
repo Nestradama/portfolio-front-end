@@ -15,6 +15,7 @@ export interface Project {
     image?: string | null
     featured?: boolean
     showOnProjects?: boolean
+    showDetail?: boolean
 }
 
 export const projects: Project[] = [

@@ -2,12 +2,14 @@
 import { computed, ref } from 'vue'
 import { useContent } from '@/composables/useContent'
 import ProjectCard from '@/components/ProjectCard.vue'
+import ProjectDetailModal from '@/components/ProjectDetailModal.vue'
 import TagFilters from '@/components/TagFilters.vue'
 import VitrineSection from '@/components/VitrineSection.vue'
 import type { Project } from '@/data/projects'
 
 const { projects, settings, tags: tagCatalog } = useContent()
 const activeTag = ref('')
+const selectedProject = ref<Project | null>(null)
 const visibleProjects = computed(() => projects.value.filter((project) => project.showOnProjects !== false))
 const hiddenTags = computed(
   () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
@@ -77,6 +79,7 @@ const groups = computed<ProjectGroup[]>(() => {
             :key="project.id"
             :project="project"
             :index="group.start + index"
+            @open="selectedProject = $event"
           />
         </div>
 
@@ -204,5 +207,7 @@ const groups = computed<ProjectGroup[]>(() => {
     <div v-if="settings.sections.projectsVitrines" class="mt-16 border-t border-(--border) pt-12 md:mt-24 md:pt-16">
       <VitrineSection location="projects" />
     </div>
+
+    <ProjectDetailModal :project="selectedProject" @close="selectedProject = null" />
   </section>
 </template>

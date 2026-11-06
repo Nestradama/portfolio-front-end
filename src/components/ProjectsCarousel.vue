@@ -4,11 +4,14 @@ const headingId = "projects-title"
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
 import ProjectCard from './ProjectCard.vue'
+import ProjectDetailModal from './ProjectDetailModal.vue'
 import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
+import type { Project } from '@/data/projects'
 
 const { projects, settings, tags: tagCatalog } = useContent()
 const activeTag = ref('')
+const selectedProject = ref<Project | null>(null)
 const featuredProjects = computed(() => projects.value.filter((project) => project.featured !== false))
 const hiddenTags = computed(
   () => new Set((tagCatalog.value ?? []).filter((tag) => tag.visible === false).map((tag) => tag.name)),
@@ -63,8 +66,10 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
     <div class="relative w-full">
       <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">
         <div class="shrink-0 w-px"></div>
-        <ProjectCard v-for="(project, index) in visibleProjects" :key="project.id" :project="project" :index="index" />
+        <ProjectCard v-for="(project, index) in visibleProjects" :key="project.id" :project="project" :index="index" @open="selectedProject = $event" />
       </div>
     </div>
+
+    <ProjectDetailModal :project="selectedProject" @close="selectedProject = null" />
   </section>
 </template>

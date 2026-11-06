@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {onMounted, onBeforeUnmount, watch} from "vue";
 
-const props = defineProps<
-    { title: string; open: boolean }>()
+const props = withDefaults(defineProps<
+    { title: string; open: boolean; wide?: boolean }>(), { wide: false })
 const emit = defineEmits<{ close: [] }>()
 
 function onKeydown(e: KeyboardEvent) {
@@ -10,7 +10,10 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => window.addEventListener('keydown', onKeydown))
-onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown)
+  document.body.style.overflow = ''
+})
 
 
 watch(() => props.open, (open) => {
@@ -23,7 +26,8 @@ watch(() => props.open, (open) => {
        class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
        :aria-label="title" role="dialog" aria-modal="true">
     <div
-        class="bg-(--card) border border-(--border) rounded-lg shadow-2xl p-6 sm:p-8 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
+        :class="wide ? 'max-w-4xl' : 'max-w-2xl'"
+        class="bg-(--card) border border-(--border) rounded-lg shadow-2xl p-6 sm:p-8 w-full relative max-h-[90vh] overflow-y-auto">
       <button class="absolute top-4 right-4 text-muted hover:text-accent"
               aria-label="Fermer la modale" @click="emit('close')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
