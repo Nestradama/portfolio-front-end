@@ -26,7 +26,7 @@ const visibleVitrines = computed(() =>
           <div class="absolute inset-x-0 bottom-0 flex items-center gap-3 p-4 bg-black/70 backdrop-blur-[2px]">
             <p class="flex-1 text-sm text-white/95 leading-relaxed">{{ vitrine.desc }}</p>
             <a v-if="vitrine.link !== null" :href="vitrine.link" :aria-label="'Voir le site ' + vitrine.title"
-               class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 hover:bg-accent hover:text-black transition-colors">
+               class="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white/15 hover:bg-accent focus-visible:bg-accent focus-visible:text-black hover:text-black transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
             </a>
             <span v-else role="img" :aria-label="vitrine.linkText"
@@ -40,7 +40,7 @@ const visibleVitrines = computed(() =>
           <h3 class="font-heading text-2xl md:text-3xl font-bold mb-4">{{vitrine.title}}</h3>
           <p class="text-sm md:text-base text-muted mb-8 leading-relaxed">{{vitrine.desc}}</p>
           <span v-if="vitrine.link === null" class="w-fit border border-(--border) py-2 px-6 font-mono text-[10px] uppercase text-gray-500 cursor-not-allowed">{{vitrine.linkText}}</span>
-          <a v-if="vitrine.link !== null" :href="vitrine.link" class="w-fit border border-(--border) py-2 px-6 font-mono text-[10px] uppercase hover:bg-accent hover:text-black transition-colors">{{vitrine.linkText}} ↗</a>
+          <a v-if="vitrine.link !== null" :href="vitrine.link" class="w-fit border border-(--border) py-2 px-6 font-mono text-[10px] uppercase hover:bg-accent hover:text-black focus-visible:bg-accent focus-visible:text-black transition-colors">{{vitrine.linkText}} <span aria-hidden="true">↗</span></a>
         </div>
 
         <div class="hidden md:block w-full md:w-1/2 border border-(--border) overflow-hidden">

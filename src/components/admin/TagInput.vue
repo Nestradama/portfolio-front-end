@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, useId } from 'vue'
 import { adminInput, adminLabel } from './adminStyles'
 
 const props = defineProps<{
@@ -11,6 +11,7 @@ const props = defineProps<{
 const emit = defineEmits<{ 'update:modelValue': [value: string[]] }>()
 
 const input = ref('')
+const inputId = useId()
 
 function add() {
   const values = input.value
@@ -38,7 +39,7 @@ function remove(tag: string) {
 
 <template>
   <div>
-    <label v-if="label" :class="adminLabel">{{ label }}</label>
+    <label v-if="label" :for="inputId" :class="adminLabel">{{ label }}</label>
     <div v-if="modelValue.length" class="mb-2 flex flex-wrap gap-2">
       <span
         v-for="tag in modelValue"
@@ -50,8 +51,10 @@ function remove(tag: string) {
       </span>
     </div>
     <input
+      :id="inputId"
       v-model="input"
       :class="adminInput"
+      :aria-label="label || 'Ajouter un tag'"
       placeholder="Ajouter un tag puis Entrée"
       :list="suggestions?.length ? 'project-tag-suggestions' : undefined"
       @keydown.enter.prevent="add"

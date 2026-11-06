@@ -49,12 +49,38 @@ function selectTag(value: string) {
   reset()
 }
 
+function revealCard(event: FocusEvent) {
+  const trackEl = track.value
+  const target = event.target
+  const viewport = trackEl?.parentElement
+  if (!trackEl || !viewport || !(target instanceof HTMLElement)) return
+
+  const card = target.closest('article')
+  if (!card) return
+
+  const cardRect = card.getBoundingClientRect()
+  const viewportRect = viewport.getBoundingClientRect()
+  const gap = window.innerWidth < 640 ? 16 : 32
+  const max = trackEl.scrollWidth - viewport.clientWidth
+
+  if (cardRect.left < viewportRect.left) {
+    currentPos.value = Math.max(0, currentPos.value - (viewportRect.left - cardRect.left) - gap)
+  } else if (cardRect.right > viewportRect.right) {
+    currentPos.value = Math.min(max, currentPos.value + (cardRect.right - viewportRect.right) + gap)
+  }
+
+  // The browser may scroll the clipping container to reveal the focused card. Keep
+  // the section heading and filters anchored while the rail itself moves.
+  const section = trackEl.closest('section')
+  if (section) section.scrollLeft = 0
+}
+
 onMounted(() => window.addEventListener('resize', reset))
 onBeforeUnmount(() => window.removeEventListener('resize', reset))
 </script>
 
 <template>
-  <section class="mb-20 sm:mb-40 overflow-hidden" :aria-labelledby="headingId">
+  <section class="mb-20 sm:mb-40 overflow-x-clip" :aria-labelledby="headingId">
     <SectionHeader :section-name="'Projets'" :headingId="headingId">
       <template #actions>
         <div class="flex gap-2">
@@ -76,7 +102,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', reset))
     />
 
     <div class="relative w-full">
-      <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }">
+      <div ref="track" class="flex gap-4 sm:gap-8 w-max smooth-glide pt-2 pb-6" :style="{ transform: `translateX(-${currentPos}px)` }" @focusin="revealCard">
         <div class="shrink-0 w-px"></div>
         <ProjectCard v-for="(project, index) in visibleProjects" :key="project.id" :project="project" :index="index" @open="selectedProject = $event" />
       </div>

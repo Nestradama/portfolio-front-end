@@ -12,7 +12,7 @@ withDefaults(defineProps<{ project: Project; compact?: boolean }>(), { compact: 
       :href="project.link"
       :class="compact ? 'px-3 py-2' : 'px-4 py-2'"
       class="inline-flex border border-(--border) font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
-    >{{ project.linkText }} ↗</a>
+    >{{ project.linkText }} <span aria-hidden="true">↗</span></a>
     <span
       v-else-if="project.linkText.trim()"
       :class="compact ? 'px-3 py-2' : 'px-4 py-2'"
@@ -28,6 +28,6 @@ withDefaults(defineProps<{ project: Project; compact?: boolean }>(), { compact: 
       :aria-label="`Voir le code de ${project.title} sur GitHub`"
       :class="compact ? 'px-3 py-2' : 'px-4 py-2'"
       class="inline-flex border border-(--border) font-mono text-[10px] uppercase tracking-widest transition-colors hover:bg-accent hover:text-black"
-    >GitHub ↗</a>
+    >GitHub <span aria-hidden="true">↗</span></a>
   </div>
 </template>

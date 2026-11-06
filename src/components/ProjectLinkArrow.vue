@@ -14,5 +14,5 @@ withDefaults(defineProps<{ project: Project; overlay?: boolean }>(), { overlay: 
       ? 'border-white/30 text-white/90 hover:border-accent hover:bg-accent hover:text-black'
       : 'border-(--border) text-muted hover:border-accent hover:bg-accent hover:text-black'"
     class="inline-flex h-7 w-7 shrink-0 items-center justify-center border font-mono text-sm transition-colors"
-  >↗</a>
+  ><span aria-hidden="true">↗</span></a>
 </template>

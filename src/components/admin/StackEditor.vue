@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import type { StackGroup } from '@/data/settings'
 import ListInput from './ListInput.vue'
-import { adminButton, adminGhostButton, adminInput, adminLabel } from './adminStyles'
+import { adminButton, adminGhostButton, adminInput } from './adminStyles'
 
 const props = defineProps<{ modelValue: StackGroup[] }>()
 const emit = defineEmits<{ 'update:modelValue': [value: StackGroup[]] }>()
@@ -53,9 +53,9 @@ function moveGroup(index: number, offset: number) {
         <button type="button" :class="adminGhostButton" @click="removeGroup(index)">Supprimer</button>
       </div>
       <div class="mt-3">
-        <label :class="adminLabel">Éléments</label>
         <ListInput
           :model-value="group.items"
+          label="Éléments"
           placeholder="Ajouter une technologie…"
           @update:model-value="group.items = $event; sync()"
         />

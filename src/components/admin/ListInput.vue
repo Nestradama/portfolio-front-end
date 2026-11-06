@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, useId } from 'vue'
 import { adminGhostButton, adminInput, adminLabel } from './adminStyles'
 
 const props = withDefaults(defineProps<{
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ 'update:modelValue': [value: string[]] }>()
 
 const input = ref('')
+const inputId = useId()
 
 function add() {
   const value = input.value.trim()
@@ -45,7 +46,7 @@ function move(index: number, offset: number) {
 
 <template>
   <div>
-    <label v-if="label" :class="adminLabel">{{ label }}</label>
+    <label v-if="label" :for="inputId" :class="adminLabel">{{ label }}</label>
 
     <div v-if="variant === 'chips'" class="mb-2 flex flex-wrap gap-2">
       <span
@@ -70,7 +71,7 @@ function move(index: number, offset: number) {
     </ul>
 
     <div class="flex gap-2">
-      <input v-model="input" :placeholder="placeholder" :aria-label="label || placeholder" :class="adminInput" @keydown.enter.prevent="add">
+      <input :id="inputId" v-model="input" :placeholder="placeholder" :aria-label="label || placeholder" :class="adminInput" @keydown.enter.prevent="add">
       <button type="button" :class="adminGhostButton" @click="add">Ajouter</button>
     </div>
   </div>

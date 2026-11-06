@@ -115,7 +115,7 @@ async function remove(tag: Tag) {
                   <tr v-for="tag in tags" :key="tag.id" class="border-t border-(--border)">
                     <td class="p-3 font-medium">{{ tag.name }}</td>
                     <td class="p-3">
-                      <select :value="tag.stack ?? ''" class="border border-(--border) bg-transparent px-2 py-1 text-sm text-ink" :disabled="busy" @change="update(tag, ($event.target as HTMLSelectElement).value)">
+                      <select :value="tag.stack ?? ''" :aria-label="`Stack du tag ${tag.name}`" class="border border-(--border) bg-transparent px-2 py-1 text-sm text-ink" :disabled="busy" @change="update(tag, ($event.target as HTMLSelectElement).value)">
                         <option value="">Sans stack</option>
                         <option v-for="option in stackOptions" :key="option" :value="option">{{ option }}</option>
                       </select>

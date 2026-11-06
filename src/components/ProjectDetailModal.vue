@@ -13,6 +13,14 @@ const zoomLayer = ref<HTMLElement | null>(null)
 const zoomTrigger = ref<HTMLElement | null>(null)
 const imageUrl = computed(() => props.project?.detailImage || props.project?.image || '')
 
+function trapLightboxFocus(event: KeyboardEvent) {
+  const close = zoomLayer.value?.querySelector<HTMLElement>('button')
+  if (!close) return
+  // The image preview only contains the close button; keep Tab inside it.
+  event.preventDefault()
+  close.focus()
+}
+
 watch(zoomOpen, async (open) => {
   if (!open) {
     // Return focus to the thumbnail so keyboard users keep their place.
@@ -103,6 +111,7 @@ watch(
       class="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-4 outline-none"
       @click.self="zoomOpen = false"
       @keydown.esc.stop="zoomOpen = false"
+      @keydown.tab="trapLightboxFocus"
     >
       <button
         type="button"

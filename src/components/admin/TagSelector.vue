@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useId } from 'vue'
 import type { Tag } from '@/data/tags'
 import { adminLabel } from './adminStyles'
 
@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{ 'update:modelValue': [value: string[]] }>()
+const labelId = useId()
 
 const groups = computed(() => {
   const result: Array<{ stack: string; tags: Tag[] }> = []
@@ -32,9 +33,9 @@ function toggle(name: string) {
 
 <template>
   <div>
-    <label v-if="label" :class="adminLabel">{{ label }}</label>
+    <p v-if="label" :id="labelId" :class="adminLabel">{{ label }}</p>
     <p v-if="!tags.length" class="text-xs text-muted">Crée d’abord des tags dans l’onglet Tags.</p>
-    <div v-else class="space-y-3">
+    <div v-else class="space-y-3" role="group" :aria-labelledby="label ? labelId : undefined">
       <div v-for="group in groups" :key="group.stack">
         <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-accent">{{ group.stack }}</p>
         <div class="flex flex-wrap gap-2">
@@ -44,6 +45,7 @@ function toggle(name: string) {
             type="button"
             class="border px-3 py-1.5 text-sm font-medium transition-colors"
             :class="modelValue.includes(tag.name) ? 'border-accent bg-accent text-black' : 'border-(--border) text-muted hover:border-accent'"
+            :aria-pressed="modelValue.includes(tag.name)"
             @click="toggle(tag.name)"
           >{{ tag.name }}</button>
         </div>
