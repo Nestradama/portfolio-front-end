@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { fetchContent } from '@/api/content'
+import { fetchBackup, fetchContent, type Content } from '@/api/content'
 import type { Project } from '@/data/projects'
 import { defaultSettings, type SiteSettings } from '@/data/settings'
 import type { Tag } from '@/data/tags'
@@ -12,9 +12,20 @@ const tags = ref<Tag[]>([])
 const version = ref(0)
 const loading = ref(false)
 const error = ref('')
+const source = ref<'api' | 'backup' | null>(null)
 
 let loaded = false
 let pending: Promise<void> | null = null
+
+function apply(content: Content, origin: 'api' | 'backup'): void {
+  projects.value = content.projects
+  vitrines.value = content.vitrines
+  settings.value = content.settings
+  tags.value = content.tags
+  version.value = content.version
+  source.value = origin
+  loaded = true
+}
 
 async function load(): Promise<void> {
   if (loaded) {
@@ -29,17 +40,19 @@ async function load(): Promise<void> {
   error.value = ''
 
   pending = fetchContent()
-    .then((content) => {
-      projects.value = content.projects
-      vitrines.value = content.vitrines
-      settings.value = content.settings
-      tags.value = content.tags
-      version.value = content.version
-      loaded = true
-    })
-    .catch((failure: unknown) => {
-      error.value = failure instanceof Error ? failure.message : 'Content API unavailable'
-      console.warn('[content] API unavailable, keeping local fallback.', failure)
+    .then((content) => apply(content, 'api'))
+    .catch(async (failure: unknown) => {
+      // The public pages must stay usable when the API is down. The static
+      // snapshot is generated from the same content by the admin.
+      try {
+        const backup = await fetchBackup()
+        apply(backup, 'backup')
+        error.value = ''
+        console.warn('[content] API unavailable, using the static backup.', failure)
+      } catch (backupFailure: unknown) {
+        error.value = failure instanceof Error ? failure.message : 'Content API unavailable'
+        console.warn('[content] API and static backup unavailable.', failure, backupFailure)
+      }
     })
     .finally(() => {
       loading.value = false
@@ -70,6 +83,7 @@ export function useContent() {
     version,
     loading,
     error,
+    source,
     load,
     refresh,
   }

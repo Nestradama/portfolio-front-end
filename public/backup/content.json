@@ -1,0 +1,407 @@
+{
+  "version": 104,
+  "updatedAt": "2026-11-07T19:13:30.895Z",
+  "settings": {
+    "logo": "",
+    "favicon": "",
+    "home": {
+      "heading": "Salut, moi c'est",
+      "name": "Corentin.",
+      "paragraphs": [
+        "Back-end de préférence, et pas mal de projets perso parce que c'est comme ça que j'apprends. Autodidacte, en formation webdev (OpenClassrooms), je vise une alternance Java.",
+        "Si vous avez des projets qui ont besoin de solutions, n'hésitez pas à [me contacter](https://corentinroquin.com/a-propos#contact)."
+      ],
+      "photo": "/assets/static/profile_picture.webp"
+    },
+    "about": {
+      "heading": "Parcours et objectif.",
+      "paragraphs": [
+        "Je m'appelle Corentin. J'ai suivi un bac STI2D, puis j'ai appris le développement en autodidacte. Je suis aujourd'hui en formation webdev chez OpenClassrooms.",
+        "Je travaille principalement sur le back-end. J'aime créer des outils, en particulier autour des API et des données."
+      ],
+      "photo": "/assets/static/profile_picture.webp"
+    },
+    "stack": {
+      "groups": [
+        {
+          "title": "Front-end",
+          "items": [
+            "HTML/CSS",
+            "JavaScript",
+            "Tailwind"
+          ]
+        },
+        {
+          "title": "Back-end",
+          "items": [
+            "Java",
+            "Python (Django, FastAPI)",
+            "Node.js"
+          ]
+        },
+        {
+          "title": "Bases de données",
+          "items": [
+            "PostgreSQL",
+            "Redis",
+            "Firebase"
+          ]
+        },
+        {
+          "title": "Mobile",
+          "items": [
+            "Flutter / Dart"
+          ]
+        },
+        {
+          "title": "Autres",
+          "items": [
+            "Git",
+            "OAuth"
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "email": "roquin.corentin@protonmail.com",
+      "github": "Nestradama",
+      "linkedin": "https://www.linkedin.com/in/corentinrqn/"
+    },
+    "seo": {
+      "siteName": "Portfolio Corentin ROQUIN",
+      "defaultImage": "/assets/og-image-fr.png",
+      "pages": {
+        "home": {
+          "title": "Corentin ROQUIN - Développeur back-end polyvalent",
+          "description": "Développeur back-end de préférence, polyvalent par nature : Java, Python et Node.js au service de solutions robustes et fonctionnelles."
+        },
+        "about": {
+          "title": "À propos - Corentin ROQUIN",
+          "description": "Parcours, stack technique et contact de Corentin ROQUIN, développeur back-end."
+        },
+        "projects": {
+          "title": "Projets - Corentin ROQUIN",
+          "description": "Projets personnels et réalisations de Corentin ROQUIN : Java, Python, Node.js et Vue."
+        }
+      }
+    },
+    "sections": {
+      "homeHero": true,
+      "homeProjects": true,
+      "homeVitrines": true,
+      "homeFilters": true,
+      "aboutIntro": true,
+      "aboutStack": true,
+      "aboutContact": true,
+      "projectsList": true,
+      "projectsVitrines": true,
+      "projectsFilters": true
+    }
+  },
+  "projects": [
+    {
+      "id": 3,
+      "title": "Kasa",
+      "context": "Formation OpenClassrooms - Web Developer",
+      "shortDescription": "Application de location immobilière construite avec React.",
+      "description": "Kasa est une application de location immobilière réalisée dans le cadre de ma formation OpenClassrooms. Le but était de construire une interface React à partir d'un jeu d'annonces : afficher les logements, ouvrir une fiche détaillée et naviguer entre les pages. J'ai découpé l'interface en composants réutilisables, fait circuler les données via les props, puis ajouté le routage avec React Router et une mise en page responsive en Sass. Le projet m'a surtout servi à comprendre la composition de composants et à structurer une application front autour de données plutôt que de pages statiques.",
+      "tags": [
+        "React"
+      ],
+      "displayMode": "card",
+      "detailImage": null,
+      "stack": [
+        "React",
+        "React Router",
+        "JavaScript",
+        "Sass"
+      ],
+      "detailedStack": [
+        "React",
+        "React Router",
+        "JavaScript",
+        "Sass",
+        "Git"
+      ],
+      "reasons": [
+        "Découvrir React et la logique de composants",
+        "Gérer la navigation et l'affichage d'annonces",
+        "Structurer une interface responsive"
+      ],
+      "link": null,
+      "linkText": "Projet de formation",
+      "image": null,
+      "github": "https://github.com/Nestradama/ocs-kasa",
+      "sortOrder": 0,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true,
+      "showDetail": true,
+      "showGithub": true
+    },
+    {
+      "id": 4,
+      "title": "Mon Vieux Grimoire",
+      "context": "Formation OpenClassrooms — Web Developer",
+      "shortDescription": "API de notation de livres avec authentification.",
+      "description": "Mon Vieux Grimoire est une API REST développée pendant ma formation OpenClassrooms, pour un site de notation de livres. Le back-end repose sur Node.js, Express et MongoDB : création de comptes, authentification par JWT, gestion des livres et des notes, calcul de la moyenne et upload d'images avec Multer. J'ai travaillé la validation des entrées, la protection des routes et la structure des modèles Mongoose. Le projet m'a fait aborder les questions de sécurité et de droits d'accès côté API, au-delà du simple CRUD.",
+      "tags": [
+        "Node.js",
+        "MongoDB",
+        "API"
+      ],
+      "displayMode": "card",
+      "detailImage": null,
+      "stack": [
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "JWT"
+      ],
+      "detailedStack": [
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Mongoose",
+        "JWT",
+        "Multer",
+        "REST API",
+        "Git"
+      ],
+      "reasons": [
+        "Construire une API REST complète",
+        "Gérer l'authentification et les droits",
+        "Travailler la validation et les uploads"
+      ],
+      "link": null,
+      "linkText": "Projet de formation",
+      "image": null,
+      "github": "https://github.com/Nestradama/ocs-mon-vieux-grimoire",
+      "sortOrder": 1,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true,
+      "showDetail": true,
+      "showGithub": true
+    },
+    {
+      "id": 1,
+      "title": "Marketframe",
+      "context": "Projet personnel",
+      "shortDescription": "Comparer la rentabilité des objets vendus par certains PNJ de Warframe.",
+      "description": "Marketframe est un outil pour Warframe. Il permet de comparer les objets vendus par certains PNJ et de voir rapidement lesquels sont les plus rentables à revendre au moment où l'outil est consulté. Le projet vient d'un besoin personnel, mais il s'adresse aussi aux nouveaux joueurs qui ne connaissent pas encore les prix.",
+      "tags": [
+        "Java",
+        "Spring Boot"
+      ],
+      "displayMode": "detailed-preview",
+      "detailImage": "/api/media/25c818d0-b0f4-4d6c-b48c-e4234da29994.jpg",
+      "stack": [
+        "REST API",
+        "Spring Boot",
+        "Vue.js"
+      ],
+      "detailedStack": [
+        "Java",
+        "Spring Boot",
+        "REST API",
+        "Vue.js",
+        "Git"
+      ],
+      "reasons": [
+        "Partir d'un besoin personnel",
+        "Comparer des données de marché",
+        "Relier un back-end Java à une interface Vue"
+      ],
+      "link": null,
+      "linkText": "Prochainement",
+      "image": null,
+      "github": null,
+      "sortOrder": 2,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true,
+      "showDetail": true,
+      "showGithub": true
+    },
+    {
+      "id": 2,
+      "title": "SRT Engrave",
+      "context": "Projet personnel",
+      "shortDescription": "Incruster des sous-titres dans les images d'une vidéo, sans fichier SRT séparé.",
+      "description": "SRT Engrave est un outil desktop qui incruste les sous-titres dans les images d'une vidéo. Il vient d'un problème concret : ma télévision ne lisait pas les fichiers SRT, qu'ils soient séparés ou attachés à la vidéo. L'outil est volontairement simple, avec moins de fonctionnalités que les logiciels existants, pour rester accessible au plus grand nombre. Je l'ai écrit en Java pour travailler sur un projet concret et me familiariser avec le langage.",
+      "tags": [
+        "Java"
+      ],
+      "displayMode": "card",
+      "detailImage": null,
+      "stack": [
+        "Java",
+        "JavaFX"
+      ],
+      "detailedStack": [
+        "Java",
+        "JavaFX",
+        "Traitement d'images",
+        "Git"
+      ],
+      "reasons": [
+        "Résoudre un problème rencontré chez moi",
+        "Faire un outil simple et accessible",
+        "M'entraîner en Java sur un projet concret"
+      ],
+      "link": null,
+      "linkText": "Prochainement",
+      "image": null,
+      "github": null,
+      "sortOrder": 3,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true,
+      "showDetail": true,
+      "showGithub": true
+    },
+    {
+      "id": 5,
+      "title": "Mon Site",
+      "context": "Projet personnel",
+      "shortDescription": "Portfolio pour mes projets et mon parcours sur un site dont je peux modifier tout le contenu moi-même, sans redéployer.",
+      "description": "Mon portfolio est le site qui présente mes projets et mon parcours de développeur back-end. Tout son contenu se modifie depuis une interface d'administration protégée, sans jamais redéployer le site pour les projets, textes, images et SEO. Le projet vient du besoin personnel d'avoir une vitrine simple et efficace que je peux controler, le tout déployé sur un serveur Ubuntu",
+      "tags": [
+        "Node.js",
+        "API",
+        "SQLite",
+        "TypeScript",
+        "Tailwind",
+        "VueJS"
+      ],
+      "displayMode": "detailed",
+      "detailImage": null,
+      "stack": [
+        "VueJS",
+        "Typescript",
+        "NodeJS"
+      ],
+      "detailedStack": [
+        "VueJS",
+        "Typescript",
+        "Nodejs",
+        "TailwindCSS",
+        "sqlite",
+        "fastify"
+      ],
+      "reasons": [
+        "Avoir une vitrine pour me présenter, tout en réalisant un projet plus complexe qu'un site statique",
+        "Réaliser un panel admin pour gérer un site"
+      ],
+      "link": "https://corentinroquin.com/",
+      "linkText": "Nous y sommes déjà",
+      "image": null,
+      "github": null,
+      "sortOrder": 4,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true,
+      "showDetail": true,
+      "showGithub": true
+    }
+  ],
+  "vitrines": [
+    {
+      "id": 1,
+      "title": "Template site Graphiste",
+      "description": "Une template destinée aux artistes du visuel, pour une communication simple et directe.",
+      "image": "/assets/static/graphist_website_preview.webp",
+      "link": "/graph_preview/index.html",
+      "linkText": "Voir le Projet",
+      "sortOrder": 0,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true
+    },
+    {
+      "id": 2,
+      "title": "Vitrine Restaurant",
+      "description": "Site vitrine responsive pour restaurant : menu interactif et support multilingue.",
+      "image": "/assets/static/clv_preview.webp",
+      "link": "/clv/index.html",
+      "linkText": "Voir le Projet",
+      "sortOrder": 1,
+      "published": true,
+      "featured": true,
+      "showOnProjects": true
+    }
+  ],
+  "tags": [
+    {
+      "id": 5,
+      "name": "API",
+      "stack": "Back-end",
+      "visible": true,
+      "usage": 2
+    },
+    {
+      "id": 1,
+      "name": "Java",
+      "stack": "Back-end",
+      "visible": true,
+      "usage": 2
+    },
+    {
+      "id": 8,
+      "name": "MongoDB",
+      "stack": "Bases de données",
+      "visible": true,
+      "usage": 1
+    },
+    {
+      "id": 3,
+      "name": "Node.js",
+      "stack": "Back-end",
+      "visible": true,
+      "usage": 2
+    },
+    {
+      "id": 12,
+      "name": "React",
+      "stack": "Front-end",
+      "visible": true,
+      "usage": 1
+    },
+    {
+      "id": 2,
+      "name": "Spring Boot",
+      "stack": "Back-end",
+      "visible": true,
+      "usage": 1
+    },
+    {
+      "id": 33,
+      "name": "SQLite",
+      "stack": "Bases de données",
+      "visible": false,
+      "usage": 1
+    },
+    {
+      "id": 32,
+      "name": "Tailwind",
+      "stack": "Back-end",
+      "visible": false,
+      "usage": 1
+    },
+    {
+      "id": 31,
+      "name": "TypeScript",
+      "stack": "Back-end",
+      "visible": true,
+      "usage": 1
+    },
+    {
+      "id": 30,
+      "name": "VueJS",
+      "stack": "Front-end",
+      "visible": true,
+      "usage": 1
+    }
+  ]
+}
