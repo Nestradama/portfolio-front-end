@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import type { AdminContent, AuditEntry } from '@/api/admin'
+import type { AdminContent, AuditEntry, BackupStatus } from '@/api/admin'
 import { adminApi, ApiError } from '@/api/admin'
 import type { ApiProject, ApiVitrine } from '@/api/content'
 import { useContent } from '@/composables/useContent'
@@ -63,6 +63,10 @@ const error = ref('')
 const auditEntries = ref<AuditEntry[]>([])
 const auditLoading = ref(false)
 const auditError = ref('')
+const backup = ref<BackupStatus | null>(null)
+const backupBusy = ref(false)
+const backupMessage = ref('')
+const backupError = ref('')
 
 onMounted(load)
 
@@ -75,6 +79,7 @@ async function load() {
 
   try {
     content.value = await adminApi.content()
+    void loadBackup()
     // Keep the public pages in sync so a refresh or a save is visible without F5.
     await refreshPublicContent()
   } catch (failure) {
@@ -111,6 +116,50 @@ async function loadAudit() {
   } finally {
     auditLoading.value = false
   }
+}
+
+async function loadBackup() {
+  try {
+    backup.value = await adminApi.backupStatus()
+  } catch (failure) {
+    if (failure instanceof ApiError && failure.status === 401) {
+      emit('logout')
+      return
+    }
+    backup.value = null
+  }
+}
+
+async function refreshBackup() {
+  backupBusy.value = true
+  backupMessage.value = ''
+  backupError.value = ''
+
+  try {
+    backup.value = await adminApi.refreshBackup(csrf)
+    backupMessage.value = 'Backup statique mis à jour.'
+  } catch (failure) {
+    if (failure instanceof ApiError && failure.status === 401) {
+      emit('logout')
+      return
+    }
+    backupError.value = messageOf(failure)
+  } finally {
+    backupBusy.value = false
+  }
+}
+
+function formatBackupDate(value: string | null): string {
+  if (!value) return '—'
+  return new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(value))
+}
+
+function formatBytes(bytes: number): string {
+  if (!bytes) return '0 Ko'
+  return `${Math.max(1, Math.round(bytes / 1024))} Ko`
 }
 
 function newProject() {
@@ -327,6 +376,36 @@ function messageOf(failure: unknown): string {
         :csrf="csrf"
         @save="saveSettings"
       />
+
+      <section v-if="tab === 'content'" class="mt-6 rounded-md border border-(--border) bg-(--card) p-5">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Sauvegarde</p>
+            <h2 class="font-heading text-lg font-bold">Backup statique</h2>
+            <p class="mt-1 max-w-2xl text-sm text-muted">
+              Utilisé automatiquement si l'API de contenu est indisponible. Il reprend les projets, les vitrines et les réglages publiés.
+            </p>
+          </div>
+          <button
+            type="button"
+            :class="adminButton"
+            :disabled="backupBusy"
+            @click="refreshBackup"
+          >
+            {{ backupBusy ? 'Mise à jour…' : 'Mettre à jour le backup' }}
+          </button>
+        </div>
+
+        <p v-if="backup?.exists" class="mt-4 text-sm text-muted">
+          Dernière mise à jour : <span class="text-ink">{{ formatBackupDate(backup.generatedAt) }}</span>
+          · version <span class="text-ink">{{ formatVersion(backup.version) }}</span>
+          · {{ formatBytes(backup.bytes) }}
+        </p>
+        <p v-else class="mt-4 text-sm text-muted">Aucun backup pour le moment.</p>
+
+        <p v-if="backupMessage" class="mt-3 text-sm text-emerald-400" role="status">{{ backupMessage }}</p>
+        <p v-if="backupError" class="mt-3 text-sm text-red-400" role="alert">{{ backupError }}</p>
+      </section>
 
       <SeoForm
         v-if="tab === 'seo'"

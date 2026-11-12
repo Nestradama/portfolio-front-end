@@ -34,6 +34,13 @@ export interface AuditEntry {
   createdAt: string
 }
 
+export interface BackupStatus {
+  exists: boolean
+  version: number
+  generatedAt: string | null
+  bytes: number
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -107,6 +114,11 @@ export const adminApi = {
   content: () => request<AdminContent>('/admin/content'),
 
   audit: () => request<{ entries: AuditEntry[] }>('/admin/audit'),
+
+  backupStatus: () => request<BackupStatus>('/admin/backup'),
+
+  refreshBackup: (csrf: string) =>
+    request<BackupStatus>('/admin/backup', { method: 'POST', csrf }),
 
   upload: async (file: File, csrf: string) => {
     const body = new FormData()
