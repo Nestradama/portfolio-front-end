@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const headingId = "projects-title"
-
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SectionHeader from './SectionHeader.vue'
 import ProjectCard from './ProjectCard.vue'
@@ -9,6 +7,8 @@ import TagFilters from './TagFilters.vue'
 import { useContent } from '@/composables/useContent'
 import { useProjectFilters } from '@/composables/useProjectFilters'
 import type { Project } from '@/data/projects'
+
+const headingId = 'projects-title'
 
 const { projects, settings, tags: tagCatalog } = useContent()
 const selectedProject = ref<Project | null>(null)

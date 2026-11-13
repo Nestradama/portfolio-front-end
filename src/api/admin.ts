@@ -53,6 +53,24 @@ export class ApiError extends Error {
   }
 }
 
+async function parseResponse<T>(response: Response): Promise<T> {
+  const payload = (await response.json().catch(() => null)) as
+    | { error?: { code?: string; message?: string; field?: string } }
+    | null
+
+  if (!response.ok) {
+    const error = payload?.error
+    throw new ApiError(
+      error?.message ?? `Erreur HTTP ${response.status}`,
+      response.status,
+      error?.code,
+      error?.field,
+    )
+  }
+
+  return payload as T
+}
+
 async function request<T>(
   path: string,
   options: {
@@ -80,20 +98,7 @@ async function request<T>(
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
   })
 
-  const payload = (await response.json().catch(() => null)) as
-    | { error?: { code?: string; message?: string; field?: string } }
-    | null
-
-  if (!response.ok) {
-    throw new ApiError(
-      payload?.error?.message ?? `Erreur HTTP ${response.status}`,
-      response.status,
-      payload?.error?.code,
-      payload?.error?.field,
-    )
-  }
-
-  return payload as T
+  return parseResponse<T>(response)
 }
 
 export const adminApi = {
@@ -135,22 +140,7 @@ export const adminApi = {
       cache: 'no-store',
     })
 
-    const payload = (await response.json().catch(() => null)) as
-      | { url: string; name: string; mime: string; size: number }
-      | { error?: { code?: string; message?: string; field?: string } }
-      | null
-
-    if (!response.ok) {
-      const error = payload as { error?: { code?: string; message?: string; field?: string } } | null
-      throw new ApiError(
-        error?.error?.message ?? `Erreur HTTP ${response.status}`,
-        response.status,
-        error?.error?.code,
-        error?.error?.field,
-      )
-    }
-
-    return payload as { url: string; name: string; mime: string; size: number }
+    return parseResponse<{ url: string; name: string; mime: string; size: number }>(response)
   },
 
   updateSettings: (payload: Partial<SiteSettings>, csrf: string) =>

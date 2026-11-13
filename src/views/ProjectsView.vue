@@ -30,14 +30,10 @@ const groups = computed<ProjectGroup[]>(() => {
 
   filteredProjects.value.forEach((project, index) => {
     const mode = project.displayMode ?? 'card'
+    const previous = result.at(-1)
 
-    if (mode === 'card') {
-      const previous = result.at(-1)
-      if (previous?.mode === 'card') {
-        previous.projects.push(project)
-      } else {
-        result.push({ mode, projects: [project], start: index })
-      }
+    if (mode === 'card' && previous?.mode === 'card') {
+      previous.projects.push(project)
     } else {
       result.push({ mode, projects: [project], start: index })
     }

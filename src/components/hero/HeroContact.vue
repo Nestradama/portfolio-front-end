@@ -14,7 +14,7 @@ const statusColor = ref<'error' | 'success' | ''>('')
 const ACCESS_KEY = "aabc9114-18a0-4ca9-aba1-1d66955a6aca"
 const ACTION_URL = "https://api.web3forms.com/submit"
 
-function handleSubmit() {
+async function handleSubmit() {
   if (!consent.value) {
     setStatus('Veuillez accepter la politique de confidentialité.', 'error')
     return
@@ -45,24 +45,28 @@ function handleSubmit() {
 
   setStatus('Envoi en cours...')
 
-  fetch(ACTION_URL, { method: 'POST', body: formData, headers: { Accept: 'application/json' } })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          setStatus('Message envoyé avec succès !', 'success')
-          name.value = ''
-          contactInfo.value = ''
-          message.value = ''
-          consent.value = false
-        } else {
-          setStatus('Une erreur est survenue. Veuillez réessayer.', 'error')
-        }
-        clearStatusSoon()
-      })
-      .catch(() => {
-        setStatus('Une erreur est survenue. Veuillez réessayer.', 'error')
-        clearStatusSoon()
-      })
+  try {
+    const response = await fetch(ACTION_URL, {
+      method: 'POST',
+      body: formData,
+      headers: { Accept: 'application/json' },
+    })
+    const data = (await response.json()) as { success?: boolean }
+
+    if (data.success) {
+      setStatus('Message envoyé avec succès !', 'success')
+      name.value = ''
+      contactInfo.value = ''
+      message.value = ''
+      consent.value = false
+    } else {
+      setStatus('Une erreur est survenue. Veuillez réessayer.', 'error')
+    }
+  } catch {
+    setStatus('Une erreur est survenue. Veuillez réessayer.', 'error')
+  } finally {
+    clearStatusSoon()
+  }
 }
 
 function setStatus(text: string, color: 'error' | 'success' | '' = '') {
