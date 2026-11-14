@@ -8,7 +8,11 @@ type Part = { text: string; href?: string; internal?: boolean }
 
 function resolve(url: string): { href: string; internal: boolean } | null {
   // Same-origin absolute links are converted to RouterLinks to avoid full reloads.
-  if (url.startsWith('#') || url.startsWith('/')) {
+  // "//host" and "/\host" are protocol-relative and must not be treated as local.
+  const isLocalPath =
+    url.startsWith('/') && !url.startsWith('//') && !url.startsWith('/\\')
+
+  if (url.startsWith('#') || isLocalPath) {
     return { href: url, internal: true }
   }
   if (/^https?:\/\//i.test(url)) {
