@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts.css";
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -12,7 +13,6 @@
   --color-accent-bright: var(--accent-bright);
   --color-pink: var(--pink);
   --color-border: var(--border);
-  --color-dot: var(--dot);
 }
 
 /* -------------
@@ -22,8 +22,8 @@
      "espresso-vin" Deep Red
      "espresso-bordeaux" Purlple/Red
   -------------                                                                      */
-:root[data-theme="espresso-vin"]       { --bg: #22181d; --card: #1b1216; --text: #e2dddd; --text-muted: #a89b9b; --accent: #9a3a56; --accent-bright: #b85c74; --pink: #ffdbfd; --border: #3a2a31; --dot: rgba(154, 58, 86, 0.08); }
-:root[data-theme="espresso-bordeaux"]  { --bg: #20151b; --card: #190f14; --text: #e0d9da; --text-muted: #a39698; --accent: #7f2840; --accent-bright: #a84a62; --pink: #ffdbfd; --border: #372630; --dot: rgba(127, 40, 64, 0.08); }
+:root[data-theme="espresso-vin"]       { --bg: #22181d; --card: #1b1216; --text: #e2dddd; --text-muted: #a89b9b; --accent: #9a3a56; --accent-bright: #b85c74; --pink: #ffdbfd; --border: #3a2a31; }
+:root[data-theme="espresso-bordeaux"]  { --bg: #20151b; --card: #190f14; --text: #e0d9da; --text-muted: #a39698; --accent: #7f2840; --accent-bright: #a84a62; --pink: #ffdbfd; --border: #372630; }
 
 body {
   background-color: var(--bg);
