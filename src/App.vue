@@ -98,7 +98,6 @@ watchEffect(() => {
 
   <SiteFooter
     :email="settings.contact.email"
-    :github="settings.contact.github"
     @open-legal="openLegal()"
     @open-privacy="openPrivacy()"
   />

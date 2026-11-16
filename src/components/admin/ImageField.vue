@@ -46,7 +46,7 @@ async function chooseFile(event: Event) {
   <div>
     <label :for="inputId" :class="adminLabel">{{ label }}</label>
     <div class="flex flex-wrap gap-2">
-      <input :id="inputId" v-model="value" :aria-describedby="error ? errorId : undefined" placeholder="/assets/... ou /api/media/..." class="min-w-0 flex-1 border border-(--border) bg-transparent px-3 py-2 text-sm text-ink">
+      <input :id="inputId" v-model="value" :aria-describedby="error ? errorId : undefined" placeholder="/assets/... ou /api/media/..." class="min-w-0 flex-1 border border-(--border) bg-transparent px-3 py-2 text-sm text-text">
       <button type="button" :class="adminGhostButton" :disabled="uploading" @click="fileInput?.click()">
         {{ uploading ? 'Upload…' : 'Upload' }}
       </button>

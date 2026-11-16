@@ -9,21 +9,16 @@ const projects = ref<Project[]>([])
 const vitrines = ref<Vitrine[]>([])
 const settings = ref<SiteSettings>(defaultSettings)
 const tags = ref<Tag[]>([])
-const version = ref(0)
-const loading = ref(false)
 const error = ref('')
-const source = ref<'api' | 'backup' | null>(null)
 
 let loaded = false
 let pending: Promise<void> | null = null
 
-function apply(content: Content, origin: 'api' | 'backup'): void {
+function apply(content: Content): void {
   projects.value = content.projects
   vitrines.value = content.vitrines
   settings.value = content.settings
   tags.value = content.tags
-  version.value = content.version
-  source.value = origin
   loaded = true
 }
 
@@ -36,17 +31,16 @@ async function load(): Promise<void> {
     return pending
   }
 
-  loading.value = true
   error.value = ''
 
   pending = fetchContent()
-    .then((content) => apply(content, 'api'))
+    .then((content) => apply(content))
     .catch(async (failure: unknown) => {
       // The public pages must stay usable when the API is down. The static
       // snapshot is generated from the same content by the admin.
       try {
         const backup = await fetchBackup()
-        apply(backup, 'backup')
+        apply(backup)
         error.value = ''
         console.warn('[content] API unavailable, using the static backup.', failure)
       } catch (backupFailure: unknown) {
@@ -55,7 +49,6 @@ async function load(): Promise<void> {
       }
     })
     .finally(() => {
-      loading.value = false
       pending = null
     })
 
@@ -80,10 +73,7 @@ export function useContent() {
     vitrines,
     settings,
     tags,
-    version,
-    loading,
     error,
-    source,
     load,
     refresh,
   }

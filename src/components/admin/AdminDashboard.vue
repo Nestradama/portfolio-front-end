@@ -83,7 +83,7 @@ async function load() {
     // Keep the public pages in sync so a refresh or a save is visible without F5.
     await refreshPublicContent()
   } catch (failure) {
-    if (failure instanceof ApiError && failure.status === 401) {
+    if (isUnauthorized(failure)) {
       emit('logout')
       return
     }
@@ -108,7 +108,7 @@ async function loadAudit() {
   try {
     auditEntries.value = (await adminApi.audit()).entries
   } catch (failure) {
-    if (failure instanceof ApiError && failure.status === 401) {
+    if (isUnauthorized(failure)) {
       emit('logout')
       return
     }
@@ -122,7 +122,7 @@ async function loadBackup() {
   try {
     backup.value = await adminApi.backupStatus()
   } catch (failure) {
-    if (failure instanceof ApiError && failure.status === 401) {
+    if (isUnauthorized(failure)) {
       emit('logout')
       return
     }
@@ -139,7 +139,7 @@ async function refreshBackup() {
     backup.value = await adminApi.refreshBackup(csrf)
     backupMessage.value = 'Backup statique mis à jour.'
   } catch (failure) {
-    if (failure instanceof ApiError && failure.status === 401) {
+    if (isUnauthorized(failure)) {
       emit('logout')
       return
     }
@@ -314,6 +314,10 @@ async function removeVitrine(vitrine: ApiVitrine) {
 function messageOf(failure: unknown): string {
   return failure instanceof ApiError ? failure.message : 'Une erreur est survenue.'
 }
+
+function isUnauthorized(failure: unknown): boolean {
+  return failure instanceof ApiError && failure.status === 401
+}
 </script>
 
 <template>
@@ -340,7 +344,7 @@ function messageOf(failure: unknown): string {
           :key="item.id"
           type="button"
           class="px-3 py-2 text-sm font-medium transition-colors"
-          :class="tab === item.id ? 'border-b-2 border-accent bg-(--card) text-accent' : 'border-b-2 border-transparent text-muted hover:text-ink'"
+          :class="tab === item.id ? 'border-b-2 border-accent bg-(--card) text-accent' : 'border-b-2 border-transparent text-muted hover:text-text'"
           @click="selectTab(item.id)"
         >
           {{ item.label }}<span v-if="item.id === 'projects'"> ({{ content.projects.length }})</span><span v-if="item.id === 'vitrines'"> ({{ content.vitrines.length }})</span>
@@ -397,8 +401,8 @@ function messageOf(failure: unknown): string {
         </div>
 
         <p v-if="backup?.exists" class="mt-4 text-sm text-muted">
-          Dernière mise à jour : <span class="text-ink">{{ formatBackupDate(backup.generatedAt) }}</span>
-          · version <span class="text-ink">{{ formatVersion(backup.version) }}</span>
+          Dernière mise à jour : <span class="text-text">{{ formatBackupDate(backup.generatedAt) }}</span>
+          · version <span class="text-text">{{ formatVersion(backup.version) }}</span>
           · {{ formatBytes(backup.bytes) }}
         </p>
         <p v-else class="mt-4 text-sm text-muted">Aucun backup pour le moment.</p>

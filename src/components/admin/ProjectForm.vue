@@ -131,7 +131,7 @@ function submit() {
           role="tab"
           :aria-selected="activeTab === tab.id"
           class="border-b-2 px-3 py-2 text-sm font-medium transition-colors"
-          :class="activeTab === tab.id ? 'border-accent bg-(--card) text-accent' : 'border-transparent text-muted hover:text-ink'"
+          :class="activeTab === tab.id ? 'border-accent bg-(--card) text-accent' : 'border-transparent text-muted hover:text-text'"
           @click="activeTab = tab.id"
         >{{ tab.label }}</button>
       </nav>

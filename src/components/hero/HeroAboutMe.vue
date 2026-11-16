@@ -12,7 +12,7 @@ const title = computed(() =>
 </script>
 
 <template>
-  <div id="hero-content" class="fade-in w-full transition-opacity duration-300">
+  <div id="hero-content" class="w-full">
     <h1 id="hero-title"
         class="font-heading text-[clamp(2.2rem,10vw,4.5rem)] font-medium mb-4 leading-[1.1] tracking-tight">
       {{ title }}

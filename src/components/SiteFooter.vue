@@ -1,8 +1,5 @@
 <script setup lang="ts">
-defineProps<{
-  email:string
-  github:string
-}>()
+defineProps<{ email: string }>()
 
 const emit = defineEmits<{ openLegal: []; openPrivacy: [] }>()
 </script>
